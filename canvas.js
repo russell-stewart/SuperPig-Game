@@ -16,28 +16,30 @@ function loadCanvas() {
     context.fillText('SuperPig' , 65 , 300);
 
     context.font = '20px OCR A Std';
-    context.fillText('Click to begin' , 200 , 500);
+    context.fillText('Click to begin' , 200 , 475);
 
-    var cloud = new Image();
-    cloud.addEventListener("load", function() {
-      context.drawImage(cloud, 200 , 100);
-      context.drawImage(cloud, 400 , 400 , 200 , 100);
-      context.drawImage(cloud , 25 , 500 , 200 , 100);
-    }, false);
-    cloud.src = 'Cloud2.png';
+    var start = new Date();
+    context.save();
+    var intervalID = window.requestAnimationFrame(moveClouds() , 50);
 
+    function moveClouds() {
+      var cloud = new Image();
+      cloud.addEventListener("load", function() {
+        context.fillStyle = lingrad;
+        context.fillRect(0 , 0 , 600 , 230);
+        context.fillRect(0 , 500 , 600 , 100);
+
+        context.translate(0.0023*start.getSeconds() , 0);
+        context.drawImage(cloud , 100 , 100);
+        context.drawImage(cloud , 300 , 500);
+        context.drawImage(cloud , 0 , 500);
+        context.restore();
+        window.requestAnimationFrame(moveClouds() , 50);
+      }, false);
+      cloud.src = 'Cloud2.png';
+    }
 
   }else alert('error');
 }
 
-/*context.fillStyle = 'rgb(245 , 245 , 245)';
-context.globalAlpha = '0.7';
-
-context.beginPath();
-context.moveTo(200 , 200);
-context.quadraticCurveTo(200 , 125 , 250 , 175);
-context.quadraticCurveTo(300 , 50 , 350 , 150);
-context.quadraticCurveTo(400 , 100 , 400 , 200);
-//context.lineTo(300 , 125);
-//context.lineTo(400 , 200);
-context.fill();*/
+function doNothing(){}
