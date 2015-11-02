@@ -2,6 +2,20 @@ function loadCanvas() {
   var canvas = document.getElementById('canvas');
 
   if(canvas.getContext('2d')) {
+    var startScreen = true;
+
+    //handle keyboard inputs
+    var keysDown = {};
+    addEventListener("keydown", function (e) {
+       var x = e.keyCode;
+       keysDown[x] = true;
+       if(x == 32) startScreen = false;
+     }, false);
+     addEventListener("keyup", function (e) {
+       delete keysDown[e.keyCode];
+      }, false);
+
+    //Prints background and game title
     var context = canvas.getContext('2d');
 
     var lingrad = context.createLinearGradient(0,0,0,600);
@@ -16,12 +30,12 @@ function loadCanvas() {
     context.fillText('SuperPig' , 65 , 300);
 
     context.font = '20px OCR A Std';
-    context.fillText('Click to begin' , 200 , 475);
+    context.fillText('Press space to begin' , 150 , 475);
 
+    //date object for animation purposes
     var start = new Date();
     context.save();
     var intervalID = window.requestAnimationFrame(moveClouds() , 50);
-
     function moveClouds() {
       var cloud = new Image();
       cloud.addEventListener("load", function() {
@@ -34,7 +48,7 @@ function loadCanvas() {
         context.drawImage(cloud , 300 , 500);
         context.drawImage(cloud , 0 , 500);
         context.restore();
-        window.requestAnimationFrame(moveClouds() , 50);
+        while(startScreen) window.requestAnimationFrame(moveClouds() , 50);
       }, false);
       cloud.src = 'Cloud2.png';
     }
