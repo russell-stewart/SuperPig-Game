@@ -71,6 +71,7 @@ function game() {
   addEventListener("keydown", function (e) {
      var x = e.keyCode;
      keysDown[x] = true;
+
      if(x == 38){
        pigY -= 5;
        var intervalID = window.requestAnimationFrame(movePig() , 50);
@@ -79,6 +80,7 @@ function game() {
        pigY += 5;
        var intervalID = window.requestAnimationFrame(movePig() , 50);
      }
+
    }, false);
    addEventListener("keyup", function (e) {
      delete keysDown[e.keyCode];
