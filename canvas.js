@@ -66,12 +66,21 @@ function loadCanvas() {
 
 var pigY = 200;
 function game() {
+
   var keysDown = {};
   addEventListener("keydown", function (e) {
      var x = e.keyCode;
      keysDown[x] = true;
-     if(x == 38) pigY -= 5;
-     if(x == 40) pigY += 5;
+
+     if(x == 38){
+       pigY -= 5;
+       var intervalID = window.requestAnimationFrame(movePig() , 50);
+     }
+     if(x == 40){
+       pigY += 5;
+       var intervalID = window.requestAnimationFrame(movePig() , 50);
+     }
+
    }, false);
    addEventListener("keyup", function (e) {
      delete keysDown[e.keyCode];
@@ -94,7 +103,7 @@ function game() {
         context.fillStyle = lingrad;
         context.fillRect(0 , 0 , 600 , 600);
         context.drawImage(pig , 100 , pigY , 100 , 100);
-        window.requestAnimationFrame(movePig() , 50);
+
       } , false);
       pig.src = 'unnamed.png';
 
