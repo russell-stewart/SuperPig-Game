@@ -40,20 +40,24 @@ function loadCanvas() {
 
     function moveClouds() {
       if(startScreen) {
-        var cloud = new Image();
-        cloud.addEventListener("load", function() {
+        var cloud1 = new Image();
+        var cloud2 = new Image();
+        var cloud3 = new Image();
+        cloud1.addEventListener("load", function() {
           context.fillStyle = lingrad;
           context.fillRect(0 , 0 , 600 , 230);
           context.fillRect(0 , 500 , 600 , 100);
 
           context.translate(0.005*start.getSeconds() , 0);
-          context.drawImage(cloud , 100 , 100);
-          context.drawImage(cloud , 300 , 500);
-          context.drawImage(cloud , 0 , 500);
+          context.drawImage(cloud1 , 100 , 100, 150, 100);
+          context.drawImage(cloud2 , 300 , 500, 150, 100);
+          context.drawImage(cloud3 , 0 , 500, 150, 100);
           context.restore();
           window.requestAnimationFrame(moveClouds() , 50);
         }, false);
-        cloud.src = 'Cloud2.png';
+        cloud1.src = 'cloud1.png';
+        cloud2.src = 'cloud2.png';
+        cloud3.src = 'cloud3.png';
       } else {
         document.getElementById('canvas').style.display = 'none';
         document.getElementById('game').style.display = 'inline';
@@ -66,12 +70,21 @@ function loadCanvas() {
 
 var pigY = 200;
 function game() {
+
   var keysDown = {};
   addEventListener("keydown", function (e) {
      var x = e.keyCode;
      keysDown[x] = true;
-     if(x == 38) pigY -= 5;
-     if(x == 40) pigY += 5;
+
+     if(x == 38){
+       pigY -= 5;
+       var intervalID = window.requestAnimationFrame(movePig() , 50);
+     }
+     if(x == 40){
+       pigY += 5;
+       var intervalID = window.requestAnimationFrame(movePig() , 50);
+     }
+
    }, false);
    addEventListener("keyup", function (e) {
      delete keysDown[e.keyCode];
@@ -93,10 +106,15 @@ function game() {
       pig.addEventListener('load' , function(){
         context.fillStyle = lingrad;
         context.fillRect(0 , 0 , 600 , 600);
+<<<<<<< HEAD
         context.drawImage(pig , 100 , pigY , 100 , 100);
         window.requestAnimationFrame(movePig());
+=======
+        context.drawImage(pig , 10 , pigY);
+
+>>>>>>> fe38c5caf39e21ba46da07c4e280951830091c35
       } , false);
-      pig.src = 'unnamed.png';
+      pig.src = 'superpig.png';
 
     }
   } else alert('error!');
