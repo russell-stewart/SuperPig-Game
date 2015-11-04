@@ -69,6 +69,13 @@ function loadCanvas() {
 }
 
 var pigY = 200;
+var cloudX = 400;
+var cloudY = Math.floor((Math.random() * 600) + 1);
+var cloudX1 = 550;
+var cloudY1 = Math.floor((Math.random() * 600) + 1);
+var cloudX2 = 700;
+var cloudY2 = Math.floor((Math.random() * 600) + 1);
+
 function game() {
 
   var keysDown = {};
@@ -78,11 +85,9 @@ function game() {
 
      if(x == 38){
        pigY -= 5;
-       var intervalID = window.requestAnimationFrame(movePig() , 50);
      }
      if(x == 40){
        pigY += 5;
-       var intervalID = window.requestAnimationFrame(movePig() , 50);
      }
 
    }, false);
@@ -103,18 +108,43 @@ function game() {
     var intervalID = window.requestAnimationFrame(movePig());
     function movePig() {
       var pig = new Image();
-      pig.addEventListener('load' , function(){
+      var cloud1 = new Image();
+      var cloud2 = new Image();
+      var cloud3 = new Image();
+      cloud3.addEventListener('load' , function(){
         context.fillStyle = lingrad;
         context.fillRect(0 , 0 , 600 , 600);
-<<<<<<< HEAD
-        context.drawImage(pig , 100 , pigY , 100 , 100);
-        window.requestAnimationFrame(movePig());
-=======
+        if(pigY < 0) pigY = 0;
+        if(pigY > 520) pigY = 520;
         context.drawImage(pig , 10 , pigY);
+        if(cloudX > 0) cloudX -= 1;
+        else {
+          cloudX = 600;
+          cloudY = Math.floor((Math.random() * 500) + 1);
+        }
+        context.drawImage(cloud1 , cloudX , cloudY , 150 , 100);
 
->>>>>>> fe38c5caf39e21ba46da07c4e280951830091c35
+
+        if(cloudX1 > 0) cloudX1 -= 1;
+        else {
+          cloudX1 = 600;
+          cloudY1 = Math.floor((Math.random() * 500) + 1);
+        }
+        context.drawImage(cloud2 , cloudX1 , cloudY1 , 150 , 100);
+
+
+        if(cloudX2 > 0) cloudX2 -= 1;
+        else {
+          cloudX2 = 600;
+          cloudY2 = Math.floor((Math.random() * 500) + 1);
+        }
+        context.drawImage(cloud3 , cloudX2 , cloudY2 , 150 , 100);
+      window.requestAnimationFrame(movePig());
       } , false);
       pig.src = 'superpig.png';
+      cloud1.src = 'cloud1.png';
+      cloud2.src = 'Cloud2.png';
+      cloud3.src = 'cloud3.png';
 
     }
   } else alert('error!');
