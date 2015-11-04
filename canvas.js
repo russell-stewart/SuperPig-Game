@@ -87,14 +87,14 @@ function game() {
     context.fillRect(0 , 0 , 600 , 600);
 
     context.save();
-    var intervalID = window.requestAnimationFrame(movePig() , 50);
+    var intervalID = window.requestAnimationFrame(movePig());
     function movePig() {
       var pig = new Image();
       pig.addEventListener('load' , function(){
         context.fillStyle = lingrad;
         context.fillRect(0 , 0 , 600 , 600);
         context.drawImage(pig , 100 , pigY , 100 , 100);
-        window.requestAnimationFrame(movePig() , 50);
+        window.requestAnimationFrame(movePig());
       } , false);
       pig.src = 'unnamed.png';
 
