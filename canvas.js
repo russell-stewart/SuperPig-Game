@@ -76,6 +76,8 @@ var cloudX1 = 600;
 var cloudY1 = Math.floor((Math.random() * 600) + 1);
 var cloudX2 = 800;
 var cloudY2 = Math.floor((Math.random() * 600) + 1);
+var score = 0;
+var speed = 1;
 
 function game() {
 
@@ -121,30 +123,36 @@ function game() {
         if(pigY < 0) pigY = 0;
         if(pigY > 520) pigY = 520;
         context.drawImage(pig , 10 , pigY);
-        if(cloudX > 0) cloudX -= 1;
+        if(cloudX > 0) cloudX -= speed;
         else {
           cloudX = 600;
           cloudY = Math.floor((Math.random() * 500) + 1);
         }
         context.drawImage(cloud1 , cloudX , cloudY , 150 , 100);
-        if(cloudX1 > 0) cloudX1 -= 1;
+        if(cloudX1 > 0) cloudX1 -= speed;
         else {
           cloudX1 = 600;
           cloudY1 = Math.floor((Math.random() * 500) + 1);
         }
         context.drawImage(cloud2 , cloudX1 , cloudY1 , 150 , 100);
-        if(cloudX2 > 0) cloudX2 -= 1;
+        if(cloudX2 > 0) cloudX2 -= speed;
         else {
           cloudX2 = 600;
           cloudY2 = Math.floor((Math.random() * 500) + 1);
         }
+        speed += 0.0002;
         context.drawImage(cloud3 , cloudX2 , cloudY2 , 150 , 100);
+        score += 0.01;
+        context.fillStyle = '#000000';
+        context.font = '20px OCR A Std';
+        context.fillText('Score: ' + (Math.floor(score)) , 10 , 50);
+
       if(stillPlaying) window.requestAnimationFrame(movePig());
       else {
-        context.fillStyle = '#FFFFFF';
+        context.fillStyle = '#000000';
         context.font = '80px OCR A Std';
         context.textAlign = 'left';
-        context.fillText('Game over!' , 40 , 300);
+        context.fillText('Game over!' , 30 , 300);
       }
       } , false);
       pig.src = 'superpig.png';
