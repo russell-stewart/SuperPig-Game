@@ -127,8 +127,8 @@ function game() {
         appleY = Math.floor(Math.random() * 500 + 1);
       }
       if(!shouldDisplayApple) {
-        var r1 = Math.floor(Math.random()*500);
-        var r2 = Math.floor(Math.random()*500);
+        var r1 = Math.floor(Math.random()*700);
+        var r2 = Math.floor(Math.random()*700);
         if(r1 == r2) shouldDisplayApple = true;
       }
       var pig = new Image();
@@ -143,19 +143,19 @@ function game() {
         if(pigY > 520) pigY = 520;
         context.drawImage(pig , 10 , pigY);
         var now = (new Date).getTime();
-        if(cloudX > 0) cloudX -= vo + a*(now - start)/1000;
+        if(cloudX > -150) cloudX -= vo + a*(now - start)/1000;
         else {
           cloudX = 600;
           cloudY = Math.floor((Math.random() * 500) + 1);
         }
         context.drawImage(cloud1 , cloudX , cloudY , 150 , 100);
-        if(cloudX1 > 0) cloudX1 -= vo + a*(now - start)/1000;
+        if(cloudX1 > -150) cloudX1 -= vo + a*(now - start)/1000;
         else {
           cloudX1 = 600;
           cloudY1 = Math.floor((Math.random() * 500) + 1);
         }
         context.drawImage(cloud2 , cloudX1 , cloudY1 , 150 , 100);
-        if(cloudX2 > 0) cloudX2 -= vo + a*(now - start)/1000;
+        if(cloudX2 > -150) cloudX2 -= vo + a*(now - start)/1000;
         else {
           cloudX2 = 600;
           cloudY2 = Math.floor((Math.random() * 500) + 1);
@@ -164,7 +164,7 @@ function game() {
 
 
         if(shouldDisplayApple) {
-          if(appleX > 0) appleX -= vo + a*(now - start) / 1000;
+          if(appleX > -50) appleX -= vo + a*(now - start) / 1000;
           else {
             appleX = 600;
             appleY = Math.floor(Math.random() * 500 + 1);
