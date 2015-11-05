@@ -76,8 +76,9 @@ var cloudX1 = 600;
 var cloudY1 = Math.floor((Math.random() * 600) + 1);
 var cloudX2 = 800;
 var cloudY2 = Math.floor((Math.random() * 600) + 1);
-var score = 0;
-var speed = 1;
+var start = (new Date).getTime();
+var vo = 0.5;
+var a = 0.05;
 
 function game() {
 
@@ -87,10 +88,10 @@ function game() {
      keysDown[x] = true;
 
      if(x == 38){
-       pigY -= 5;
+       pigY -= 10;
      }
      if(x == 40){
-       pigY += 5;
+       pigY += 10;
      }
 
    }, false);
@@ -123,29 +124,29 @@ function game() {
         if(pigY < 0) pigY = 0;
         if(pigY > 520) pigY = 520;
         context.drawImage(pig , 10 , pigY);
-        if(cloudX > 0) cloudX -= speed;
+        var now = (new Date).getTime();
+        if(cloudX > 0) cloudX -= vo + a*(now - start)/1000;
         else {
           cloudX = 600;
           cloudY = Math.floor((Math.random() * 500) + 1);
         }
         context.drawImage(cloud1 , cloudX , cloudY , 150 , 100);
-        if(cloudX1 > 0) cloudX1 -= speed;
+        if(cloudX1 > 0) cloudX1 -= vo + a*(now - start)/1000;
         else {
           cloudX1 = 600;
           cloudY1 = Math.floor((Math.random() * 500) + 1);
         }
         context.drawImage(cloud2 , cloudX1 , cloudY1 , 150 , 100);
-        if(cloudX2 > 0) cloudX2 -= speed;
+        if(cloudX2 > 0) cloudX2 -= vo + a*(now - start)/1000;
         else {
           cloudX2 = 600;
           cloudY2 = Math.floor((Math.random() * 500) + 1);
         }
-        speed += 0.0002;
         context.drawImage(cloud3 , cloudX2 , cloudY2 , 150 , 100);
-        score += 0.01;
         context.fillStyle = '#000000';
         context.font = '20px OCR A Std';
-        context.fillText('Score: ' + (Math.floor(score)) , 10 , 50);
+
+        context.fillText('Score: ' + Math.floor((now - start)/1000) , 10 , 50);
 
       if(stillPlaying) window.requestAnimationFrame(movePig());
       else {
@@ -153,6 +154,12 @@ function game() {
         context.font = '80px OCR A Std';
         context.textAlign = 'left';
         context.fillText('Game over!' , 30 , 300);
+        context.font = '20px OCR A Std';
+        context.fillText('Press space to try again' , 125 , 450);
+        addEventListener('keydown' , function(e1){
+          var key = e1.keyCode;
+          if(key == 32) location.reload(true);
+        } , false);
       }
       } , false);
       pig.src = 'superpig.png';
