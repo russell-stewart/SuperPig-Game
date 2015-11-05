@@ -77,8 +77,14 @@ var cloudY1 = Math.floor((Math.random() * 600) + 1);
 var cloudX2 = 800;
 var cloudY2 = Math.floor((Math.random() * 600) + 1);
 var start = (new Date).getTime();
+//for chrome: vo=.2 a = .01
+//for safari: vo=.5 a = .05
 var vo = 0.5;
 var a = 0.05;
+var shouldDisplayApple = false;
+var appleX = 600;
+var appleY = 300;
+var numApples = 0;
 
 function game() {
 
@@ -114,10 +120,22 @@ function game() {
       if(pigY <= cloudY + 50 && pigY >= cloudY - 50 && cloudX <= 110 && cloudX >= 10) stillPlaying = false;
       if(pigY <= cloudY1 + 50 && pigY >= cloudY1 - 50 && cloudX1 <= 110 && cloudX1 >= 10) stillPlaying = false;
       if(pigY <= cloudY2 + 50 && pigY >= cloudY2 - 50 && cloudX2 <= 110 && cloudX2 >= 10) stillPlaying = false;
+      if(shouldDisplayApple && pigY <= appleY + 25 && pigY >= appleY - 25 && appleX <= 110 && appleX >= 10) {
+        numApples++;
+        shouldDisplayApple = false;
+        appleX = 600;
+        appleY = Math.floor(Math.random() * 500 + 1);
+      }
+      if(!shouldDisplayApple) {
+        var r1 = Math.floor(Math.random()*500);
+        var r2 = Math.floor(Math.random()*500);
+        if(r1 == r2) shouldDisplayApple = true;
+      }
       var pig = new Image();
       var cloud1 = new Image();
       var cloud2 = new Image();
       var cloud3 = new Image();
+      if(shouldDisplayApple) var apple = new Image();
       cloud3.addEventListener('load' , function(){
         context.fillStyle = lingrad;
         context.fillRect(0 , 0 , 600 , 600);
@@ -143,10 +161,21 @@ function game() {
           cloudY2 = Math.floor((Math.random() * 500) + 1);
         }
         context.drawImage(cloud3 , cloudX2 , cloudY2 , 150 , 100);
+
+
+        if(shouldDisplayApple) {
+          if(appleX > 0) appleX -= vo + a*(now - start) / 1000;
+          else {
+            appleX = 600;
+            appleY = Math.floor(Math.random() * 500 + 1);
+            shouldDisplayApple = false;
+          }
+        }
+        if(shouldDisplayApple) context.drawImage(apple , appleX , appleY , 50 , 50);
         context.fillStyle = '#000000';
         context.font = '20px OCR A Std';
 
-        context.fillText('Score: ' + Math.floor((now - start)/1000) , 10 , 50);
+        context.fillText('Score: ' + (Math.floor((now - start)/1000) + numApples*20) , 10 , 50);
 
       if(stillPlaying) window.requestAnimationFrame(movePig());
       else {
@@ -166,7 +195,7 @@ function game() {
       cloud1.src = 'cloud1.png';
       cloud2.src = 'Cloud2.png';
       cloud3.src = 'cloud3.png';
-
+      if(shouldDisplayApple) apple.src = 'apple.png';
     }
   } else alert('error!');
 }
