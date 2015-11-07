@@ -138,7 +138,7 @@ function game() {
         appleY = Math.floor(Math.random() * 500 + 1);
       }
       if(shouldDisplayCarrot && pigY <= carrotY + 25 && pigY >= carrotY - 25 && carrotX <= 110 && carrotX >= 10) {
-        numLasers = 3;
+        numLasers += 3;
         laserX = 100;
         shouldDisplayCarrot = false;
         carrotX = 600;
@@ -154,9 +154,31 @@ function game() {
         var r2 = Math.floor(Math.random()*3000);//use 5000 for chrome, 3000 for safari
         if(r1 == r2) shouldDisplayCarrot = true;
       }
+      if(laserX >= cloudX && laserY <= cloudX + 150 && laserY >= cloudY && laserY <= cloudY + 100) {
+        numLasers--;
+        shouldDisplayLaser = false;
+        laserX = 100;
+        cloudX = 800;
+        cloudY = Math.floor((Math.random() * 500) + 1);
+      }
+      if(laserX >= cloudX1 && laserY <= cloudX1 + 150 && laserY >= cloudY1 && laserY <= cloudY1 + 100) {
+        numLasers--;
+        shouldDisplayLaser = false;
+        laserX = 100;
+        cloudX1 = 800;
+        cloudY1 = Math.floor((Math.random() * 500) + 1);
+      }
+      if(laserX >= cloudX2 && laserY <= cloudX2 + 150 && laserY >= cloudY2 && laserY <= cloudY2 + 100) {
+        numLasers--;
+        shouldDisplayLaser = false;
+        laserX = 100;
+        cloudX2 = 800;
+        cloudY2 = Math.floor((Math.random() * 500) + 1);
+      }
       if(laserX > 600) {
         numLasers--;
         shouldDisplayLaser = false;
+        laserX = 100;
       }
 
       var pig = new Image();
