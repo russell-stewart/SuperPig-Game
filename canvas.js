@@ -76,7 +76,7 @@ var cloudX1 = 600;
 var cloudY1 = Math.floor((Math.random() * 600) + 1);
 var cloudX2 = 800;
 var cloudY2 = Math.floor((Math.random() * 600) + 1);
-var start = (new Date).getTime();
+
 //for chrome: vo=.2 a = .01
 //for safari: vo=.5 a = .05
 var vo = 0.5;
@@ -85,9 +85,19 @@ var shouldDisplayApple = false;
 var appleX = 600;
 var appleY = 300;
 var numApples = 0;
+var shouldDisplayCarrot = false;
+var carrotX = 600;
+var carrotY = 300;
+var numLasers = 0;
+var shouldDisplayLaser = false;
+var laserX = 100;
+var laserY = 500;
+var carrotX = 600;
+var carrotY = 300;
+
 
 function game() {
-
+  var start = (new Date).getTime();
   var keysDown = {};
   addEventListener("keydown", function (e) {
      var x = e.keyCode;
@@ -96,6 +106,7 @@ function game() {
      if(x == 38){
        pigY -= 10;
      }
+     if(x == 39 && numLasers > 0) shouldDisplayLaser = true;
      if(x == 40){
        pigY += 10;
      }
@@ -126,23 +137,49 @@ function game() {
         appleX = 600;
         appleY = Math.floor(Math.random() * 500 + 1);
       }
+      if(shouldDisplayCarrot && pigY <= carrotY + 25 && pigY >= carrotY - 25 && carrotX <= 110 && carrotX >= 10) {
+        numLasers = 3;
+        laserX = 100;
+        shouldDisplayCarrot = false;
+        carrotX = 600;
+        carrotY = Math.floor(Math.random() * 500 + 1);
+      }
       if(!shouldDisplayApple) {
         var r1 = Math.floor(Math.random()*700);
         var r2 = Math.floor(Math.random()*700);
         if(r1 == r2) shouldDisplayApple = true;
       }
+      if(!shouldDisplayCarrot) {
+        var r1 = Math.floor(Math.random()*3000);
+        var r2 = Math.floor(Math.random()*3000);//use 5000 for chrome, 3000 for safari
+        if(r1 == r2) shouldDisplayCarrot = true;
+      }
+      if(laserX > 600) {
+        numLasers--;
+        shouldDisplayLaser = false;
+      }
+
       var pig = new Image();
       var cloud1 = new Image();
       var cloud2 = new Image();
       var cloud3 = new Image();
       if(shouldDisplayApple) var apple = new Image();
-      cloud3.addEventListener('load' , function(){
+      if(shouldDisplayCarrot) var carrot = new Image();
+      var laser = new Image();
+      laser.addEventListener('load' , function(){
         context.fillStyle = lingrad;
         context.fillRect(0 , 0 , 600 , 600);
+        var now = (new Date).getTime();
+        if(shouldDisplayLaser) {
+          if(laserX == 100) laserY = pigY + 20;
+          laserX += 10*vo;
+        }
+        if(shouldDisplayLaser) context.drawImage(laser , laserX , laserY , 50 , 10);
+
         if(pigY < 0) pigY = 0;
         if(pigY > 520) pigY = 520;
         context.drawImage(pig , 10 , pigY);
-        var now = (new Date).getTime();
+
         if(cloudX > -150) cloudX -= vo + a*(now - start)/1000;
         else {
           cloudX = 600;
@@ -172,10 +209,25 @@ function game() {
           }
         }
         if(shouldDisplayApple) context.drawImage(apple , appleX , appleY , 50 , 50);
+
+        if(shouldDisplayCarrot) {
+          if(carrotX > -50) carrotX -= vo + a*(now - start) / 1000;
+          else {
+            carrotX = 600;
+            carrotY = Math.floor(Math.random() * 500 + 1);
+            shouldDisplayCarrot = false;
+          }
+        }
+        if(shouldDisplayCarrot) context.drawImage(carrot , carrotX , carrotY , 50 , 50);
+
+
         context.fillStyle = '#000000';
         context.font = '20px OCR A Std';
-
         context.fillText('Score: ' + (Math.floor((now - start)/1000) + numApples*20) , 10 , 50);
+        if(numLasers > 0) {
+          context.fillStyle = 'rgb(255 , 0 , 0)';
+          context.fillText('Lasers: ' + numLasers , 10 , 70);
+        }
 
       if(stillPlaying) window.requestAnimationFrame(movePig());
       else {
@@ -196,6 +248,8 @@ function game() {
       cloud2.src = 'Cloud2.png';
       cloud3.src = 'cloud3.png';
       if(shouldDisplayApple) apple.src = 'apple.png';
+      if(shouldDisplayCarrot) carrot.src = 'carrot.png';
+      laser.src = 'laser.png';
     }
   } else alert('error!');
 }
