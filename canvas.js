@@ -1,14 +1,17 @@
 //for chrome: vo=.2 a = .01
 //for safari: vo=.5 a = .05
-var vo = 0.2;
+var vo = 0.5;
 var v1 = .05;
-var a = 0.01;
+var a = 0.05;
 var cloudX = 400;
 var cloudY = 100;
 var cloudX1 = 100;
 var cloudY1 = 500;
 var cloudX2 = 500;
 var cloudY2 = 500;
+var theme = new Audio('SuperPig-Music/SuperPig-Theme.m4a');
+var fast = new Audio('SuperPig-Music/SuperPig-Fast.m4a');
+var die = new Audio('SuperPig-Music/SuperPig-Die.m4a');
 
 function loadCanvas() {
   var canvas = document.getElementById('canvas');
@@ -48,6 +51,12 @@ function loadCanvas() {
 
     context.font = '20px OCR A Std';
     context.fillText('Press space to begin' , 150 , 475);
+
+    theme.play();
+    theme.addEventListener('ended', function() {
+      this.currentTime = 0;
+      this.play();
+    }, false);
 
     //date object for animation purposes
     var start = (new Date).getTime();
@@ -153,7 +162,12 @@ var carrotY = 300;
 
 
 function game() {
-
+  theme.pause();
+  fast.play();
+  fast.addEventListener('ended', function() {
+    this.currentTime = 0;
+    this.play();
+  }, false);
   var start = (new Date).getTime();
   cloudX = 400;
   cloudY = Math.floor((Math.random() * 600) + 1);
@@ -316,6 +330,8 @@ function game() {
 
       if(stillPlaying) window.requestAnimationFrame(movePig());
       else {
+        fast.pause();
+        die.play();
         context.fillStyle = '#000000';
         context.font = '80px OCR A Std';
         context.textAlign = 'left';
