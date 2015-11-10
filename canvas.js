@@ -1,8 +1,8 @@
 //for chrome: vo=.2 a = .01
 //for safari: vo=.5 a = .05
-var vo = 0.5;
+var vo = 0.2;
 var v1 = .05;
-var a = 0.05;
+var a = 0.01;
 var cloudX = 400;
 var cloudY = 100;
 var cloudX1 = 100;
@@ -191,9 +191,9 @@ function game() {
     context.save();
     var intervalID = window.requestAnimationFrame(movePig());
     function movePig() {
-      if(pigY <= cloudY + 50 && pigY >= cloudY - 50 && cloudX <= 110 && cloudX >= 10) stillPlaying = false;
-      if(pigY <= cloudY1 + 50 && pigY >= cloudY1 - 50 && cloudX1 <= 110 && cloudX1 >= 10) stillPlaying = false;
-      if(pigY <= cloudY2 + 50 && pigY >= cloudY2 - 50 && cloudX2 <= 110 && cloudX2 >= 10) stillPlaying = false;
+      if(pigY <= cloudY + 50 && pigY >= cloudY - 50 && cloudX <= 110 && cloudX >= 0) stillPlaying = false;
+      if(pigY <= cloudY1 + 50 && pigY >= cloudY1 - 50 && cloudX1 <= 110 && cloudX1 >= 0) stillPlaying = false;
+      if(pigY <= cloudY2 + 50 && pigY >= cloudY2 - 50 && cloudX2 <= 110 && cloudX2 >= 0) stillPlaying = false;
       if(shouldDisplayApple && pigY <= appleY + 25 && pigY >= appleY - 25 && appleX <= 110 && appleX >= 10) {
         numApples++;
         shouldDisplayApple = false;
@@ -217,21 +217,21 @@ function game() {
         var r2 = Math.floor(Math.random()*3000);//use 5000 for chrome, 3000 for safari
         if(r1 == r2) shouldDisplayCarrot = true;
       }
-      if(shouldDisplayLaser && laserX >= cloudX && laserY <= cloudX + 150 && laserY >= cloudY && laserY <= cloudY + 100) {
+      if(shouldDisplayLaser && laserX >= cloudX && laserX <= cloudX + 150 && laserY >= cloudY && laserY <= cloudY + 100) {
         numLasers--;
         shouldDisplayLaser = false;
         laserX = 100;
         cloudX = 800;
         cloudY = Math.floor((Math.random() * 500) + 1);
       }
-      if(shouldDisplayLaser && laserX >= cloudX1 && laserY <= cloudX1 + 150 && laserY >= cloudY1 && laserY <= cloudY1 + 100) {
+      if(shouldDisplayLaser && laserX >= cloudX1 && laserX <= cloudX1 + 150 && laserY >= cloudY1 && laserY <= cloudY1 + 100) {
         numLasers--;
         shouldDisplayLaser = false;
         laserX = 100;
         cloudX1 = 800;
         cloudY1 = Math.floor((Math.random() * 500) + 1);
       }
-      if(shouldDisplayLaser && laserX >= cloudX2 && laserY <= cloudX2 + 150 && laserY >= cloudY2 && laserY <= cloudY2 + 100) {
+      if(shouldDisplayLaser && laserX >= cloudX2 && laserX <= cloudX2 + 150 && laserY >= cloudY2 && laserY <= cloudY2 + 100) {
         numLasers--;
         shouldDisplayLaser = false;
         laserX = 100;
