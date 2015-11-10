@@ -1,8 +1,21 @@
+//for chrome: vo=.2 a = .01
+//for safari: vo=.5 a = .05
+var vo = 0.5;
+var v1 = .05;
+var a = 0.05;
+var cloudX = 400;
+var cloudY = 100;
+var cloudX1 = 100;
+var cloudY1 = 500;
+var cloudX2 = 500;
+var cloudY2 = 500;
+
 function loadCanvas() {
   var canvas = document.getElementById('canvas');
 
   if(canvas.getContext('2d')) {
     var startScreen = true;
+    var instructionScreen = true;
 
     //handle keyboard inputs
     //up: 38 down: 40 space: 32
@@ -10,7 +23,10 @@ function loadCanvas() {
     addEventListener("keydown", function (e) {
        var x = e.keyCode;
        keysDown[x] = true;
-       if(x == 32) startScreen = false;
+       if(x == 32)startScreen = false;
+       if(!startScreen && x==32) instructionScreen = false;
+
+
      }, false);
      addEventListener("keyup", function (e) {
        delete keysDown[e.keyCode];
@@ -34,9 +50,10 @@ function loadCanvas() {
     context.fillText('Press space to begin' , 150 , 475);
 
     //date object for animation purposes
-    var start = new Date();
+    var start = (new Date).getTime();
     context.save();
     var intervalID = window.requestAnimationFrame(moveClouds() , 50);
+
 
     function moveClouds() {
       if(startScreen) {
@@ -48,21 +65,68 @@ function loadCanvas() {
           context.fillRect(0 , 0 , 600 , 230);
           context.fillRect(0 , 500 , 600 , 100);
 
-          context.translate(0.01*start.getSeconds() , 0);
-          context.drawImage(cloud1 , 100 , 100, 150, 100);
-          context.drawImage(cloud2 , 300 , 500, 150, 100);
-          context.drawImage(cloud3 , 0 , 500, 150, 100);
-          context.restore();
+          if(cloudX > -150) cloudX -= v1;
+          else {
+            cloudX = 600;
+
+          }
+          context.drawImage(cloud1 , cloudX , cloudY , 150 , 100);
+          if(cloudX1 > -150) cloudX1 -= v1;
+          else {
+            cloudX1 = 600;
+
+          }
+          context.drawImage(cloud2 , cloudX1 , cloudY1 , 150 , 100);
+          if(cloudX2 > -150) cloudX2 -= v1;
+          else {
+            cloudX2 = 600;
+
+          }
+          context.drawImage(cloud3 , cloudX2 , cloudY2 , 150 , 100);
           window.requestAnimationFrame(moveClouds() , 50);
         }, false);
         cloud1.src = 'cloud1.png';
         cloud2.src = 'cloud2.png';
         cloud3.src = 'cloud3.png';
-      } else {
-        document.getElementById('canvas').style.display = 'none';
-        document.getElementById('game').style.display = 'inline';
-        game();
+      } else{
+
+        context.fillStyle = lingrad;
+        context.fillRect(0 , 0 , 600 , 600);
+        context.fillStyle = '#FFFFFF';
+        context.font = '20px OCR A Std';
+        context.textAlign = 'left';
+        context.fillText("Instructions" , 200 , 50);
+        var cloud = new Image();
+        var apple = new Image();
+        var carrot = new Image();
+        var laser = new Image();
+        laser.addEventListener("load", function(){
+          context.drawImage(cloud, 50, 70, 100, 66);
+          context.drawImage(apple, 75, 150, 50, 50 );
+          context.drawImage(carrot, 75, 220, 50, 50);
+          context.drawImage(laser, 75, 300, 50, 10);
+          context.font = '12px OCR A Std';
+          context.fillText("Use the up and down arrows to dodge clouds!", 160, 110);
+          context.fillText("Eat apples to gain points!", 160, 180);
+          context.fillText("Eat carrots to get laser vision!", 160, 250);
+          context.fillText("Press the right arrow to fire a laser!", 160, 310);
+          context.font = '20px OCR A Std';
+          context.fillText('Click the screen to begin' , 130 , 475);
+        }, false);
+
+        addEventListener("click", function (e){
+          document.getElementById('canvas').style.display = 'none';
+          document.getElementById('game').style.display = 'inline';
+          game();
+        }, false);
+        cloud.src = 'cloud1.png';
+        apple.src = 'apple.png';
+        carrot.src = 'carrot.png';
+        laser.src = 'laser.png'
       }
+
+
+
 
     }
   }else alert('error');
@@ -70,17 +134,9 @@ function loadCanvas() {
 
 var stillPlaying = true;
 var pigY = 200;
-var cloudX = 400;
-var cloudY = Math.floor((Math.random() * 600) + 1);
-var cloudX1 = 600;
-var cloudY1 = Math.floor((Math.random() * 600) + 1);
-var cloudX2 = 800;
-var cloudY2 = Math.floor((Math.random() * 600) + 1);
 
-//for chrome: vo=.2 a = .01
-//for safari: vo=.5 a = .05
-var vo = 0.5;
-var a = 0.05;
+
+
 var shouldDisplayApple = false;
 var appleX = 600;
 var appleY = 300;
@@ -97,7 +153,14 @@ var carrotY = 300;
 
 
 function game() {
+
   var start = (new Date).getTime();
+  cloudX = 400;
+  cloudY = Math.floor((Math.random() * 600) + 1);
+  cloudX1 = 600;
+  cloudY1 = Math.floor((Math.random() * 600) + 1);
+  cloudX2 = 800;
+  cloudY2 = Math.floor((Math.random() * 600) + 1);
   var keysDown = {};
   addEventListener("keydown", function (e) {
      var x = e.keyCode;
@@ -154,21 +217,21 @@ function game() {
         var r2 = Math.floor(Math.random()*3000);//use 5000 for chrome, 3000 for safari
         if(r1 == r2) shouldDisplayCarrot = true;
       }
-      if(laserX >= cloudX && laserY <= cloudX + 150 && laserY >= cloudY && laserY <= cloudY + 100) {
+      if(shouldDisplayLaser && laserX >= cloudX && laserY <= cloudX + 150 && laserY >= cloudY && laserY <= cloudY + 100) {
         numLasers--;
         shouldDisplayLaser = false;
         laserX = 100;
         cloudX = 800;
         cloudY = Math.floor((Math.random() * 500) + 1);
       }
-      if(laserX >= cloudX1 && laserY <= cloudX1 + 150 && laserY >= cloudY1 && laserY <= cloudY1 + 100) {
+      if(shouldDisplayLaser && laserX >= cloudX1 && laserY <= cloudX1 + 150 && laserY >= cloudY1 && laserY <= cloudY1 + 100) {
         numLasers--;
         shouldDisplayLaser = false;
         laserX = 100;
         cloudX1 = 800;
         cloudY1 = Math.floor((Math.random() * 500) + 1);
       }
-      if(laserX >= cloudX2 && laserY <= cloudX2 + 150 && laserY >= cloudY2 && laserY <= cloudY2 + 100) {
+      if(shouldDisplayLaser && laserX >= cloudX2 && laserY <= cloudX2 + 150 && laserY >= cloudY2 && laserY <= cloudY2 + 100) {
         numLasers--;
         shouldDisplayLaser = false;
         laserX = 100;
