@@ -12,6 +12,14 @@ var cloudY2 = 500;
 var theme = new Audio('SuperPig-Music/SuperPig-Theme.m4a');
 var fast = new Audio('SuperPig-Music/SuperPig-Fast.m4a');
 var die = new Audio('SuperPig-Music/SuperPig-Die.m4a');
+var carrotSpawnRate = 3000;//use 5000 for chrome, 3000 for safari
+//Changes speeds for chrome because chrome is weird and has a different refresh rate
+if(navigator.userAgent.indexOf('Chrome') > 0) {
+  vo = .2;
+  a = .01;
+  carrotSpawnRate = 5000;
+}
+
 
 function loadCanvas() {
   var canvas = document.getElementById('canvas');
@@ -227,8 +235,8 @@ function game() {
         if(r1 == r2) shouldDisplayApple = true;
       }
       if(!shouldDisplayCarrot) {
-        var r1 = Math.floor(Math.random()*3000);
-        var r2 = Math.floor(Math.random()*3000);//use 5000 for chrome, 3000 for safari
+        var r1 = Math.floor(Math.random()*carrotSpawnRate);
+        var r2 = Math.floor(Math.random()*carrotSpawnRate);
         if(r1 == r2) shouldDisplayCarrot = true;
       }
       if(shouldDisplayLaser && laserX >= cloudX && laserX <= cloudX + 150 && laserY >= cloudY && laserY <= cloudY + 100) {
