@@ -117,7 +117,7 @@ function loadCanvas() {
         var apple = new Image();
         var carrot = new Image();
         var laser = new Image();
-        laser.addEventListener("load", function(){
+        apple.addEventListener("load", function(){
           context.drawImage(cloud, 50, 70, 100, 66);
           context.drawImage(apple, 75, 150, 50, 50 );
           context.drawImage(carrot, 75, 220, 50, 50);
