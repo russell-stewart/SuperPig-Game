@@ -243,21 +243,21 @@ function game() {
         numLasers--;
         shouldDisplayLaser = false;
         laserX = 100;
-        cloudX = 800;
+        cloudX += 600;
         cloudY = Math.floor((Math.random() * 500) + 1);
       }
       if(shouldDisplayLaser && laserX >= cloudX1 && laserX <= cloudX1 + 150 && laserY >= cloudY1 && laserY <= cloudY1 + 100) {
         numLasers--;
         shouldDisplayLaser = false;
         laserX = 100;
-        cloudX1 = 800;
+        cloudX1 += 600;
         cloudY1 = Math.floor((Math.random() * 500) + 1);
       }
       if(shouldDisplayLaser && laserX >= cloudX2 && laserX <= cloudX2 + 150 && laserY >= cloudY2 && laserY <= cloudY2 + 100) {
         numLasers--;
         shouldDisplayLaser = false;
         laserX = 100;
-        cloudX2 = 800;
+        cloudX2 += 600;
         cloudY2 = Math.floor((Math.random() * 500) + 1);
       }
       if(laserX > 600) {
