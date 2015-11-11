@@ -346,7 +346,7 @@ function game() {
       } , false);
       pig.src = 'superpig.png';
       cloud1.src = 'cloud1.png';
-      cloud2.src = 'Cloud2.png';
+      cloud2.src = 'cloud2.png';
       cloud3.src = 'cloud3.png';
       if(shouldDisplayApple) apple.src = 'apple.png';
       if(shouldDisplayCarrot) carrot.src = 'carrot.png';
