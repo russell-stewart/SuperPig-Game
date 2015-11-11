@@ -12,6 +12,14 @@ var cloudY2 = 500;
 var theme = new Audio('SuperPig-Music/SuperPig-Theme.m4a');
 var fast = new Audio('SuperPig-Music/SuperPig-Fast.m4a');
 var die = new Audio('SuperPig-Music/SuperPig-Die.m4a');
+var carrotSpawnRate = 3000;//use 5000 for chrome, 3000 for safari
+//Changes speeds for chrome because chrome is weird and has a different refresh rate
+if(navigator.userAgent.indexOf('Chrome') > 0) {
+  vo = .2;
+  a = .01;
+  carrotSpawnRate = 5000;
+}
+
 
 function loadCanvas() {
   var canvas = document.getElementById('canvas');
@@ -109,7 +117,7 @@ function loadCanvas() {
         var apple = new Image();
         var carrot = new Image();
         var laser = new Image();
-        laser.addEventListener("load", function(){
+        apple.addEventListener("load", function(){
           context.drawImage(cloud, 50, 70, 100, 66);
           context.drawImage(apple, 75, 150, 50, 50 );
           context.drawImage(carrot, 75, 220, 50, 50);
@@ -227,29 +235,29 @@ function game() {
         if(r1 == r2) shouldDisplayApple = true;
       }
       if(!shouldDisplayCarrot) {
-        var r1 = Math.floor(Math.random()*3000);
-        var r2 = Math.floor(Math.random()*3000);//use 5000 for chrome, 3000 for safari
+        var r1 = Math.floor(Math.random()*carrotSpawnRate);
+        var r2 = Math.floor(Math.random()*carrotSpawnRate);
         if(r1 == r2) shouldDisplayCarrot = true;
       }
       if(shouldDisplayLaser && laserX >= cloudX && laserX <= cloudX + 150 && laserY >= cloudY && laserY <= cloudY + 100) {
         numLasers--;
         shouldDisplayLaser = false;
         laserX = 100;
-        cloudX = 800;
+        cloudX += 600;
         cloudY = Math.floor((Math.random() * 500) + 1);
       }
       if(shouldDisplayLaser && laserX >= cloudX1 && laserX <= cloudX1 + 150 && laserY >= cloudY1 && laserY <= cloudY1 + 100) {
         numLasers--;
         shouldDisplayLaser = false;
         laserX = 100;
-        cloudX1 = 800;
+        cloudX1 += 600;
         cloudY1 = Math.floor((Math.random() * 500) + 1);
       }
       if(shouldDisplayLaser && laserX >= cloudX2 && laserX <= cloudX2 + 150 && laserY >= cloudY2 && laserY <= cloudY2 + 100) {
         numLasers--;
         shouldDisplayLaser = false;
         laserX = 100;
-        cloudX2 = 800;
+        cloudX2 += 600;
         cloudY2 = Math.floor((Math.random() * 500) + 1);
       }
       if(laserX > 600) {
@@ -346,7 +354,7 @@ function game() {
       } , false);
       pig.src = 'superpig.png';
       cloud1.src = 'cloud1.png';
-      cloud2.src = 'Cloud2.png';
+      cloud2.src = 'cloud2.png';
       cloud3.src = 'cloud3.png';
       if(shouldDisplayApple) apple.src = 'apple.png';
       if(shouldDisplayCarrot) carrot.src = 'carrot.png';
