@@ -19,14 +19,14 @@ if(navigator.userAgent.indexOf('Chrome') > 0) {
   a = .01;
   carrotSpawnRate = 5000;
 }
-
+var instructionScreen = true;
 
 function loadCanvas() {
   var canvas = document.getElementById('canvas');
 
   if(canvas.getContext('2d')) {
     var startScreen = true;
-    var instructionScreen = true;
+
 
     //handle keyboard inputs
     //up: 38 down: 40 space: 32
@@ -35,7 +35,7 @@ function loadCanvas() {
        var x = e.keyCode;
        keysDown[x] = true;
        if(x == 32)startScreen = false;
-       if(!startScreen && x==32) instructionScreen = false;
+       //if(!startScreen && x==32) instructionScreen = false;
 
 
      }, false);
@@ -128,14 +128,28 @@ function loadCanvas() {
           context.fillText("Eat carrots to get laser vision!", 160, 250);
           context.fillText("Press the right arrow to fire a laser!", 160, 310);
           context.font = '20px OCR A Std';
-          context.fillText('Click the screen to begin' , 130 , 475);
+          context.fillText('Press space to begin' , 150 , 475);
         }, false);
 
-        addEventListener("click", function (e){
-          document.getElementById('canvas').style.display = 'none';
-          document.getElementById('game').style.display = 'inline';
-          game();
-        }, false);
+        addEventListener("keydown", function (e) {
+           var x = e.keyCode;
+           keysDown[x] = true;
+           if(x==32){
+             if(instructionScreen){
+               document.getElementById('canvas').style.display = 'none';
+               instructionScreen = false;
+               document.getElementById('game').style.display = 'inline';
+               game();
+           }
+         }
+
+
+         }, false);
+         addEventListener("keyup", function (e) {
+           delete keysDown[e.keyCode];
+          }, false);
+
+
         cloud.src = 'cloud1.png';
         apple.src = 'apple.png';
         carrot.src = 'carrot.png';
@@ -338,7 +352,9 @@ function game() {
 
       if(stillPlaying) window.requestAnimationFrame(movePig());
       else {
+        instructionScreen = true;
         fast.pause();
+        fast.currentTime = 0;
         die.play();
         context.fillStyle = '#000000';
         context.font = '80px OCR A Std';
@@ -346,9 +362,19 @@ function game() {
         context.fillText('Game over!' , 30 , 300);
         context.font = '20px OCR A Std';
         context.fillText('Press space to try again' , 125 , 450);
+
         addEventListener('keydown' , function(e1){
+
           var key = e1.keyCode;
-          if(key == 32) location.reload(true);
+          if(key == 32){
+            stillPlaying = true;
+            die.pause();
+            die.currentTime = 0;
+            numApples = 0;
+            numLasers = 0;
+
+            game();
+          }
         } , false);
       }
       } , false);
