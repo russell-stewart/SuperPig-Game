@@ -9,6 +9,22 @@ var cloudX1 = 100;
 var cloudY1 = 500;
 var cloudX2 = 500;
 var cloudY2 = 500;
+var stillPlaying = true;
+var pigY = 200;
+var shouldDisplayApple = false;
+var appleX = 600;
+var appleY = 300;
+var numApples = 0;
+var shouldDisplayCarrot = false;
+var carrotX = 600;
+var carrotY = 300;
+var numLasers = 0;
+var shouldDisplayLaser = false;
+var laserX = 100;
+var laserY = 500;
+var carrotX = 600;
+var carrotY = 300;
+var haveMadeKeyListener = false;
 var theme = new Audio('SuperPig-Music/SuperPig-Theme.m4a');
 var fast = new Audio('SuperPig-Music/SuperPig-Fast.m4a');
 var die = new Audio('SuperPig-Music/SuperPig-Die.m4a');
@@ -163,24 +179,7 @@ function loadCanvas() {
   }else alert('error');
 }
 
-var stillPlaying = true;
-var pigY = 200;
 
-
-
-var shouldDisplayApple = false;
-var appleX = 600;
-var appleY = 300;
-var numApples = 0;
-var shouldDisplayCarrot = false;
-var carrotX = 600;
-var carrotY = 300;
-var numLasers = 0;
-var shouldDisplayLaser = false;
-var laserX = 100;
-var laserY = 500;
-var carrotX = 600;
-var carrotY = 300;
 
 
 function game() {
@@ -197,23 +196,26 @@ function game() {
   cloudY1 = Math.floor((Math.random() * 600) + 1);
   cloudX2 = 800;
   cloudY2 = Math.floor((Math.random() * 600) + 1);
-  var keysDown = {};
-  addEventListener("keydown", function (e) {
-     var x = e.keyCode;
-     keysDown[x] = true;
+  if(!haveMadeKeyListener) {
+    var keysDown = {};
+    addEventListener("keydown", function (e) {
+      var x = e.keyCode;
+      keysDown[x] = true;
 
-     if(x == 38){
-       pigY -= 10;
-     }
-     if(x == 39 && numLasers > 0) shouldDisplayLaser = true;
-     if(x == 40){
-       pigY += 10;
-     }
+      if(x == 38){
+        pigY -= 10;
+      }
+      if(x == 39 && numLasers > 0) shouldDisplayLaser = true;
+      if(x == 40){
+        pigY += 10;
+      }
 
-   }, false);
-   addEventListener("keyup", function (e) {
-     delete keysDown[e.keyCode];
     }, false);
+    addEventListener("keyup", function (e) {
+      delete keysDown[e.keyCode];
+      }, false);
+      haveMadeKeyListener = true;
+  }
 
   var game = document.getElementById('game');
   if(game.getContext('2d')) {
