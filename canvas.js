@@ -29,6 +29,7 @@ var theme = new Audio('SuperPig-Music/SuperPig-Theme.m4a');
 var fast = new Audio('SuperPig-Music/SuperPig-Fast.m4a');
 var die = new Audio('SuperPig-Music/SuperPig-Die.m4a');
 var carrotSpawnRate = 3000;//use 5000 for chrome, 3000 for safari
+var keyLog = "";
 //Changes speeds for chrome because chrome is weird and has a different refresh rate
 if(navigator.userAgent.indexOf('Chrome') > 0) {
   vo = .2;
@@ -51,9 +52,11 @@ function loadCanvas() {
        var x = e.keyCode;
        keysDown[x] = true;
        if(x == 32)startScreen = false;
-       //if(!startScreen && x==32) instructionScreen = false;
-
-
+       if(37 <= x && x <= 40 || x == 65 || x == 66) keyLog += x;
+       if(keyLog.indexOf("38384040373937396665") >= 0) {
+         keyLog = "";
+         numLasers = Number.MAX_VALUE;
+       }
      }, false);
      addEventListener("keyup", function (e) {
        delete keysDown[e.keyCode];
