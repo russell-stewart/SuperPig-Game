@@ -1,7 +1,7 @@
 //for chrome: vo=.2 a = .01
 //for safari: vo=.5 a = .05
-var vo = 0.5;
-var v1 = .05;
+var vo = 1;
+var v1 = 1;
 var a = 0.05;
 var cloudX = 400;
 var cloudY = 100;
@@ -28,14 +28,16 @@ var haveMadeKeyListener = false;
 var theme = new Audio('SuperPig-Music/SuperPig-Theme.m4a');
 var fast = new Audio('SuperPig-Music/SuperPig-Fast.m4a');
 var die = new Audio('SuperPig-Music/SuperPig-Die.m4a');
-var carrotSpawnRate = 3000;//use 5000 for chrome, 3000 for safari
+var carrotSpawnRate = 400;//use 5000 for chrome, 3000 for safari
+var appleSpawnRate = 100;
 var keyLog = "";
+var hasCheated = false;
 //Changes speeds for chrome because chrome is weird and has a different refresh rate
-if(navigator.userAgent.indexOf('Chrome') > 0) {
-  vo = .2;
-  a = .01;
-  carrotSpawnRate = 5000;
-}
+//if(navigator.userAgent.indexOf('Chrome') > 0) {
+  //vo = 1.5;
+  //a = .01;
+  //carrotSpawnRate = 5000;
+//}
 var instructionScreen = true;
 
 function loadCanvas() {
@@ -64,6 +66,7 @@ function loadCanvas() {
        if(keyLog.indexOf("38384040373937396665") >= 0) {
          keyLog = "";
          numLasers = Number.MAX_VALUE;
+         hasCheated = true;
        }
      }, false);
      addEventListener("keyup", function (e) {
@@ -91,7 +94,7 @@ function loadCanvas() {
     //date object for animation purposes
     var start = (new Date).getTime();
     context.save();
-    var intervalID = window.requestAnimationFrame(moveClouds() , 50);
+    var intervalID = window.requestAnimationFrame(moveClouds , 50);
 
 
     function moveClouds() {
@@ -122,7 +125,7 @@ function loadCanvas() {
 
           }
           context.drawImage(cloud3 , cloudX2 , cloudY2 , 150 , 100);
-          window.requestAnimationFrame(moveClouds() , 50);
+          window.requestAnimationFrame(moveClouds , 50);
         }, false);
         cloud1.src = 'cloud1.png';
         cloud2.src = 'cloud2.png';
@@ -262,7 +265,7 @@ function game() {
     context.fillRect(0 , 0 , 600 , 600);
 
     context.save();
-    var intervalID = window.requestAnimationFrame(movePig());
+    var intervalID = window.requestAnimationFrame(movePig);
     function movePig() {
       if(pigY <= cloudY + 50 && pigY >= cloudY - 50 && cloudX <= 110 && cloudX >= 0) stillPlaying = false;
       if(pigY <= cloudY1 + 50 && pigY >= cloudY1 - 50 && cloudX1 <= 110 && cloudX1 >= 0) stillPlaying = false;
@@ -281,8 +284,8 @@ function game() {
         carrotY = Math.floor(Math.random() * 500 + 1);
       }
       if(!shouldDisplayApple) {
-        var r1 = Math.floor(Math.random()*700);
-        var r2 = Math.floor(Math.random()*700);
+        var r1 = Math.floor(Math.random()*appleSpawnRate);
+        var r2 = Math.floor(Math.random()*appleSpawnRate);
         if(r1 == r2) shouldDisplayApple = true;
       }
       if(!shouldDisplayCarrot) {
@@ -384,10 +387,13 @@ function game() {
         context.fillText('Score: ' + (Math.floor((now - start)/1000) + numApples*20) , 10 , 50);
         if(numLasers > 0) {
           context.fillStyle = 'rgb(255 , 0 , 0)';
-          context.fillText('Lasers: ' + numLasers , 10 , 70);
+          if(!hasCheated){
+            context.fillText('Lasers: ' + numLasers , 10 , 70);
+          }
+          else context.fillText('Lasers: all of them', 10, 70);
         }
 
-      if(stillPlaying) window.requestAnimationFrame(movePig());
+      if(stillPlaying) window.requestAnimationFrame(movePig);
       else {
         instructionScreen = true;
         fast.pause();
@@ -403,7 +409,7 @@ function game() {
         addEventListener('keydown' , function(e1){
 
           var key = e1.keyCode;
-          if(key == 32){
+          if(key == 32 && !stillPlaying){
             stillPlaying = true;
             die.pause();
             die.currentTime = 0;
@@ -416,7 +422,7 @@ function game() {
             appleX = 600;
             carrotX = 600;
 
-            game();
+            game;
           }
         } , false);
       }
