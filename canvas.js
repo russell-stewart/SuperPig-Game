@@ -9,10 +9,27 @@ var cloudX1 = 100;
 var cloudY1 = 500;
 var cloudX2 = 500;
 var cloudY2 = 500;
+var stillPlaying = true;
+var pigY = 200;
+var shouldDisplayApple = false;
+var appleX = 600;
+var appleY = 300;
+var numApples = 0;
+var shouldDisplayCarrot = false;
+var carrotX = 600;
+var carrotY = 300;
+var numLasers = 0;
+var shouldDisplayLaser = false;
+var laserX = 100;
+var laserY = 500;
+var carrotX = 600;
+var carrotY = 300;
+var haveMadeKeyListener = false;
 var theme = new Audio('SuperPig-Music/SuperPig-Theme.m4a');
 var fast = new Audio('SuperPig-Music/SuperPig-Fast.m4a');
 var die = new Audio('SuperPig-Music/SuperPig-Die.m4a');
 var carrotSpawnRate = 3000;//use 5000 for chrome, 3000 for safari
+var keyLog = "";
 //Changes speeds for chrome because chrome is weird and has a different refresh rate
 if(navigator.userAgent.indexOf('Chrome') > 0) {
   vo = .2;
@@ -27,22 +44,6 @@ function loadCanvas() {
   if(canvas.getContext('2d')) {
     var startScreen = true;
 
-
-    //handle keyboard inputs
-    //up: 38 down: 40 space: 32
-    var keysDown = {};
-    addEventListener("keydown", function (e) {
-       var x = e.keyCode;
-       keysDown[x] = true;
-       if(x == 32)startScreen = false;
-       //if(!startScreen && x==32) instructionScreen = false;
-
-
-     }, false);
-     addEventListener("keyup", function (e) {
-       delete keysDown[e.keyCode];
-      }, false);
-
     //Prints background and game title
     var context = canvas.getContext('2d');
 
@@ -52,13 +53,34 @@ function loadCanvas() {
     context.fillStyle = lingrad;
     context.fillRect(0 , 0 , 600 , 600);
 
+    //handle keyboard inputs
+    //up: 38 down: 40 space: 32
+    var keysDown = {};
+    addEventListener("keydown", function (e) {
+       var x = e.keyCode;
+       keysDown[x] = true;
+       if(x == 32 || 67)startScreen = false;
+       if(37 <= x && x <= 40 || x == 65 || x == 66 || x == 67) keyLog += x;
+       if(keyLog.indexOf("38384040373937396665") >= 0) {
+         keyLog = "";
+         numLasers = Number.MAX_VALUE;
+       }
+     }, false);
+     addEventListener("keyup", function (e) {
+       delete keysDown[e.keyCode];
+      }, false);
+
+
+    context.textAlign = 'center';
     context.fillStyle = '#FFFFFF';
     context.font = '80px OCR A Std';
-    context.textAlign = 'left';
-    context.fillText('SuperPig' , 65 , 300);
+    context.textAlign = 'center';
+    context.fillText('SuperPig' , 300 , 300);
 
     context.font = '20px OCR A Std';
-    context.fillText('Press space to begin' , 150 , 475);
+    context.fillText('Press space to begin' , 300 , 475);
+
+    context.fillText('Press c for credits' , 300 , 450);
 
     theme.play();
     theme.addEventListener('ended', function() {
@@ -105,8 +127,37 @@ function loadCanvas() {
         cloud1.src = 'cloud1.png';
         cloud2.src = 'cloud2.png';
         cloud3.src = 'cloud3.png';
-      } else{
-
+      }
+      else{
+        if(keyLog.indexOf('67') >= 0) {
+          context.fillStyle = lingrad;
+          context.fillRect(0 , 0 , 600 , 600);
+          context.font = '30 OCR A Std';
+          context.textAlign = 'center';
+          context.fillStyle = '#FFFFFF';
+          context.fillText('Credits' , 300 , 50);
+          context.font = '20 OCR A Std';
+          context.fillText('Concept: Bryce' , 300 , 150);
+          context.fillText('Coding: Sarah and Russell' , 300 , 200);
+          context.fillText('Sprites: Jacque and Tyler' , 300 , 250);
+          context.fillText('Music: Amari and Russell' , 300 , 300);
+          context.fillText('Maracas: Amari' , 300 , 350);
+          context.fillText('Want to contribute? Visit' , 300 , 400);
+          context.fillText('github.com/russell-stewart/SuperPig-Game' , 300 , 430);
+          context.fillText('Press space to begin' , 300 , 550);
+          addEventListener("keydown", function (e) {
+             var x = e.keyCode;
+             keysDown[x] = true;
+             if(x==32){
+               if(instructionScreen){
+                 document.getElementById('canvas').style.display = 'none';
+                 instructionScreen = false;
+                 document.getElementById('game').style.display = 'inline';
+                 game();
+             }
+           }
+           }, false);
+        } else {
         context.fillStyle = lingrad;
         context.fillRect(0 , 0 , 600 , 600);
         context.fillStyle = '#FFFFFF';
@@ -117,7 +168,7 @@ function loadCanvas() {
         var apple = new Image();
         var carrot = new Image();
         var laser = new Image();
-        apple.addEventListener("load", function(){
+        laser.addEventListener("load", function(){
           context.drawImage(cloud, 50, 70, 100, 66);
           context.drawImage(apple, 75, 150, 50, 50 );
           context.drawImage(carrot, 75, 220, 50, 50);
@@ -158,29 +209,12 @@ function loadCanvas() {
 
 
 
-
+    }
     }
   }else alert('error');
 }
 
-var stillPlaying = true;
-var pigY = 200;
 
-
-
-var shouldDisplayApple = false;
-var appleX = 600;
-var appleY = 300;
-var numApples = 0;
-var shouldDisplayCarrot = false;
-var carrotX = 600;
-var carrotY = 300;
-var numLasers = 0;
-var shouldDisplayLaser = false;
-var laserX = 100;
-var laserY = 500;
-var carrotX = 600;
-var carrotY = 300;
 
 
 function game() {
@@ -197,23 +231,26 @@ function game() {
   cloudY1 = Math.floor((Math.random() * 600) + 1);
   cloudX2 = 800;
   cloudY2 = Math.floor((Math.random() * 600) + 1);
-  var keysDown = {};
-  addEventListener("keydown", function (e) {
-     var x = e.keyCode;
-     keysDown[x] = true;
+  if(!haveMadeKeyListener) {
+    var keysDown = {};
+    addEventListener("keydown", function (e) {
+      var x = e.keyCode;
+      keysDown[x] = true;
 
-     if(x == 38){
-       pigY -= 10;
-     }
-     if(x == 39 && numLasers > 0) shouldDisplayLaser = true;
-     if(x == 40){
-       pigY += 10;
-     }
+      if(x == 38){
+        pigY -= 10;
+      }
+      if(x == 39 && numLasers > 0) shouldDisplayLaser = true;
+      if(x == 40){
+        pigY += 10;
+      }
 
-   }, false);
-   addEventListener("keyup", function (e) {
-     delete keysDown[e.keyCode];
     }, false);
+    addEventListener("keyup", function (e) {
+      delete keysDown[e.keyCode];
+      }, false);
+      haveMadeKeyListener = true;
+  }
 
   var game = document.getElementById('game');
   if(game.getContext('2d')) {
@@ -372,6 +409,12 @@ function game() {
             die.currentTime = 0;
             numApples = 0;
             numLasers = 0;
+            shouldDisplayLaser = false;
+            laserX = 100;
+            shouldDisplayApple = false;
+            shouldDisplayCarrot = false;
+            appleX = 600;
+            carrotX = 600;
 
             game();
           }
