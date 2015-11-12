@@ -133,7 +133,7 @@ function loadCanvas() {
         var apple = new Image();
         var carrot = new Image();
         var laser = new Image();
-        apple.addEventListener("load", function(){
+        laser.addEventListener("load", function(){
           context.drawImage(cloud, 50, 70, 100, 66);
           context.drawImage(apple, 75, 150, 50, 50 );
           context.drawImage(carrot, 75, 220, 50, 50);
@@ -374,6 +374,12 @@ function game() {
             die.currentTime = 0;
             numApples = 0;
             numLasers = 0;
+            shouldDisplayLaser = false;
+            laserX = 100;
+            shouldDisplayApple = false;
+            shouldDisplayCarrot = false;
+            appleX = 600;
+            carrotX = 600;
 
             game();
           }
