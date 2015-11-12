@@ -140,10 +140,11 @@ function loadCanvas() {
           context.fillText('Concept: Bryce' , 300 , 150);
           context.fillText('Coding: Sarah and Russell' , 300 , 200);
           context.fillText('Sprites: Jacque and Tyler' , 300 , 250);
-          context.fillText('Maracas: Amari' , 300 , 300);
-          context.fillText('Want to contribute? Visit' , 300 , 350);
-          context.fillText('github.com/russell-stewart/SuperPig-Game' , 300 , 370);
-          context.fillText('Press space to begin' , 300 , 475);
+          context.fillText('Music: Amari and Russell' , 300 , 300);
+          context.fillText('Maracas: Amari' , 300 , 350);
+          context.fillText('Want to contribute? Visit' , 300 , 400);
+          context.fillText('github.com/russell-stewart/SuperPig-Game' , 300 , 430);
+          context.fillText('Press space to begin' , 300 , 550);
           addEventListener("keydown", function (e) {
              var x = e.keyCode;
              keysDown[x] = true;
