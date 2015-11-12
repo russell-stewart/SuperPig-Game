@@ -44,24 +44,6 @@ function loadCanvas() {
   if(canvas.getContext('2d')) {
     var startScreen = true;
 
-
-    //handle keyboard inputs
-    //up: 38 down: 40 space: 32
-    var keysDown = {};
-    addEventListener("keydown", function (e) {
-       var x = e.keyCode;
-       keysDown[x] = true;
-       if(x == 32)startScreen = false;
-       if(37 <= x && x <= 40 || x == 65 || x == 66) keyLog += x;
-       if(keyLog.indexOf("38384040373937396665") >= 0) {
-         keyLog = "";
-         numLasers = Number.MAX_VALUE;
-       }
-     }, false);
-     addEventListener("keyup", function (e) {
-       delete keysDown[e.keyCode];
-      }, false);
-
     //Prints background and game title
     var context = canvas.getContext('2d');
 
@@ -71,13 +53,34 @@ function loadCanvas() {
     context.fillStyle = lingrad;
     context.fillRect(0 , 0 , 600 , 600);
 
+    //handle keyboard inputs
+    //up: 38 down: 40 space: 32
+    var keysDown = {};
+    addEventListener("keydown", function (e) {
+       var x = e.keyCode;
+       keysDown[x] = true;
+       if(x == 32 || 67)startScreen = false;
+       if(37 <= x && x <= 40 || x == 65 || x == 66 || x == 67) keyLog += x;
+       if(keyLog.indexOf("38384040373937396665") >= 0) {
+         keyLog = "";
+         numLasers = Number.MAX_VALUE;
+       }
+     }, false);
+     addEventListener("keyup", function (e) {
+       delete keysDown[e.keyCode];
+      }, false);
+
+
+    context.textAlign = 'center';
     context.fillStyle = '#FFFFFF';
     context.font = '80px OCR A Std';
-    context.textAlign = 'left';
-    context.fillText('SuperPig' , 65 , 300);
+    context.textAlign = 'center';
+    context.fillText('SuperPig' , 300 , 300);
 
     context.font = '20px OCR A Std';
-    context.fillText('Press space to begin' , 150 , 475);
+    context.fillText('Press space to begin' , 300 , 475);
+
+    context.fillText('Press c for credits' , 300 , 450);
 
     theme.play();
     theme.addEventListener('ended', function() {
@@ -124,8 +127,36 @@ function loadCanvas() {
         cloud1.src = 'cloud1.png';
         cloud2.src = 'cloud2.png';
         cloud3.src = 'cloud3.png';
-      } else{
-
+      }
+      else{
+        if(keyLog.indexOf('67') >= 0) {
+          context.fillStyle = lingrad;
+          context.fillRect(0 , 0 , 600 , 600);
+          context.font = '30 OCR A Std';
+          context.textAlign = 'center';
+          context.fillStyle = '#FFFFFF';
+          context.fillText('Credits' , 300 , 50);
+          context.font = '20 OCR A Std';
+          context.fillText('Concept: Bryce' , 300 , 150);
+          context.fillText('Coding: Sarah and Russell' , 300 , 200);
+          context.fillText('Sprites: Jacque and Tyler' , 300 , 250);
+          context.fillText('Maracas: Amari' , 300 , 300);
+          context.fillText('Want to contribute? Visit' , 300 , 350);
+          context.fillText('github.com/russell-stewart/SuperPig-Game' , 300 , 370);
+          context.fillText('Press space to begin' , 300 , 475);
+          addEventListener("keydown", function (e) {
+             var x = e.keyCode;
+             keysDown[x] = true;
+             if(x==32){
+               if(instructionScreen){
+                 document.getElementById('canvas').style.display = 'none';
+                 instructionScreen = false;
+                 document.getElementById('game').style.display = 'inline';
+                 game();
+             }
+           }
+           }, false);
+        } else {
         context.fillStyle = lingrad;
         context.fillRect(0 , 0 , 600 , 600);
         context.fillStyle = '#FFFFFF';
@@ -177,7 +208,7 @@ function loadCanvas() {
 
 
 
-
+    }
     }
   }else alert('error');
 }
