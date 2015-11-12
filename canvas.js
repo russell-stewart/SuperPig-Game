@@ -139,8 +139,9 @@ function loadCanvas() {
                document.getElementById('canvas').style.display = 'none';
                instructionScreen = false;
                document.getElementById('game').style.display = 'inline';
-            }   game();
+               game();
            }
+         }
 
 
          }, false);
@@ -351,6 +352,7 @@ function game() {
 
       if(stillPlaying) window.requestAnimationFrame(movePig());
       else {
+        instructionScreen = true;
         fast.pause();
         fast.currentTime = 0;
         die.play();
@@ -360,12 +362,17 @@ function game() {
         context.fillText('Game over!' , 30 , 300);
         context.font = '20px OCR A Std';
         context.fillText('Press space to try again' , 125 , 450);
+
         addEventListener('keydown' , function(e1){
+
           var key = e1.keyCode;
           if(key == 32){
             stillPlaying = true;
             die.pause();
             die.currentTime = 0;
+            numApples = 0;
+            numLasers = 0;
+
             game();
           }
         } , false);
