@@ -33,6 +33,7 @@ var carrotSpawnRate = 400;//use 5000 for chrome, 3000 for safari
 var appleSpawnRate = 100;
 var keyLog = "";
 var hasCheated = false;
+var score = 0;
 //Changes speeds for chrome because chrome is weird and has a different refresh rate
 //if(navigator.userAgent.indexOf('Chrome') > 0) {
   //vo = 1.5;
@@ -194,7 +195,7 @@ function loadCanvas() {
                document.getElementById('canvas').style.display = 'none';
                instructionScreen = false;
                document.getElementById('game').style.display = 'inline';
-               game();
+               doStuff();
            }
          }
 
@@ -218,7 +219,9 @@ function loadCanvas() {
   }else alert('error');
 }
 
-
+function doStuff(){
+  game();
+}
 
 
 function game() {
@@ -267,7 +270,8 @@ function game() {
 
     context.save();
     var intervalID = window.requestAnimationFrame(movePig);
-    function movePig() {
+
+  function movePig() {
       if(pigY <= cloudY + 50 && pigY >= cloudY - 50 && cloudX <= 110 && cloudX >= 0) stillPlaying = false;
       if(pigY <= cloudY1 + 50 && pigY >= cloudY1 - 50 && cloudX1 <= 110 && cloudX1 >= 0) stillPlaying = false;
       if(pigY <= cloudY2 + 50 && pigY >= cloudY2 - 50 && cloudX2 <= 110 && cloudX2 >= 0) stillPlaying = false;
@@ -385,10 +389,10 @@ function game() {
         }
         if(shouldDisplayCarrot) context.drawImage(carrot , carrotX , carrotY , 50 , 50);
 
-
+        score = (Math.floor((now - start)/1000) + numApples*20 + numCloudsShot*10)
         context.fillStyle = '#000000';
         context.font = '20px OCR A Std';
-        context.fillText('Score: ' + (Math.floor((now - start)/1000) + numApples*20 + numCloudsShot*10) , 10 , 50);
+        context.fillText('Score: ' +  score, 10 , 50);
         if(numLasers > 0) {
           context.fillStyle = 'rgb(255 , 0 , 0)';
           if(!hasCheated){
@@ -397,7 +401,8 @@ function game() {
           else context.fillText('Lasers: all of them', 10, 70);
         }
 
-      if(stillPlaying) window.requestAnimationFrame(movePig);
+      if(stillPlaying && score< 20) window.requestAnimationFrame(movePig);
+      else if(stillPlaying && score > 20);
       else {
         instructionScreen = true;
         fast.pause();
