@@ -15,6 +15,7 @@ var shouldDisplayApple = false;
 var appleX = 600;
 var appleY = 300;
 var numApples = 0;
+var numCloudsShot = 0;
 var shouldDisplayCarrot = false;
 var carrotX = 600;
 var carrotY = 300;
@@ -295,6 +296,7 @@ function game() {
       }
       if(shouldDisplayLaser && laserX >= cloudX && laserX <= cloudX + 150 && laserY >= cloudY && laserY <= cloudY + 100) {
         numLasers--;
+        numCloudsShot ++;
         shouldDisplayLaser = false;
         laserX = 100;
         cloudX += 800;
@@ -302,6 +304,7 @@ function game() {
       }
       if(shouldDisplayLaser && laserX >= cloudX1 && laserX <= cloudX1 + 150 && laserY >= cloudY1 && laserY <= cloudY1 + 100) {
         numLasers--;
+        numCloudsShot ++;
         shouldDisplayLaser = false;
         laserX = 100;
         cloudX1 += 800;
@@ -309,6 +312,7 @@ function game() {
       }
       if(shouldDisplayLaser && laserX >= cloudX2 && laserX <= cloudX2 + 150 && laserY >= cloudY2 && laserY <= cloudY2 + 100) {
         numLasers--;
+        numCloudsShot ++;
         shouldDisplayLaser = false;
         laserX = 100;
         cloudX2 += 800;
@@ -384,7 +388,7 @@ function game() {
 
         context.fillStyle = '#000000';
         context.font = '20px OCR A Std';
-        context.fillText('Score: ' + (Math.floor((now - start)/1000) + numApples*20) , 10 , 50);
+        context.fillText('Score: ' + (Math.floor((now - start)/1000) + numApples*20 + numCloudsShot*10) , 10 , 50);
         if(numLasers > 0) {
           context.fillStyle = 'rgb(255 , 0 , 0)';
           if(!hasCheated){
@@ -415,6 +419,7 @@ function game() {
             die.currentTime = 0;
             numApples = 0;
             numLasers = 0;
+            numCloudsShot = 0;
             shouldDisplayLaser = false;
             laserX = 100;
             shouldDisplayApple = false;
