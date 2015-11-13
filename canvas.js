@@ -1,6 +1,6 @@
 //for chrome: vo=.2 a = .01
 //for safari: vo=.5 a = .05
-var vo = 1;
+var vo = 2;
 var v1 = 1;
 var a = 0.05;
 var cloudX = 400;
@@ -230,9 +230,9 @@ function game() {
   var start = (new Date).getTime();
   cloudX = 400;
   cloudY = Math.floor((Math.random() * 600) + 1);
-  cloudX1 = 600;
+  cloudX1 = 700;
   cloudY1 = Math.floor((Math.random() * 600) + 1);
-  cloudX2 = 800;
+  cloudX2 = 1000;
   cloudY2 = Math.floor((Math.random() * 600) + 1);
   if(!haveMadeKeyListener) {
     var keysDown = {};
@@ -273,14 +273,14 @@ function game() {
       if(shouldDisplayApple && pigY <= appleY + 25 && pigY >= appleY - 25 && appleX <= 110 && appleX >= 10) {
         numApples++;
         shouldDisplayApple = false;
-        appleX = 600;
+        appleX += 600;
         appleY = Math.floor(Math.random() * 500 + 1);
       }
       if(shouldDisplayCarrot && pigY <= carrotY + 25 && pigY >= carrotY - 25 && carrotX <= 110 && carrotX >= 10) {
         numLasers += 3;
         laserX = 100;
         shouldDisplayCarrot = false;
-        carrotX = 600;
+        carrotX += 600;
         carrotY = Math.floor(Math.random() * 500 + 1);
       }
       if(!shouldDisplayApple) {
@@ -297,21 +297,21 @@ function game() {
         numLasers--;
         shouldDisplayLaser = false;
         laserX = 100;
-        cloudX += 600;
+        cloudX += 800;
         cloudY = Math.floor((Math.random() * 500) + 1);
       }
       if(shouldDisplayLaser && laserX >= cloudX1 && laserX <= cloudX1 + 150 && laserY >= cloudY1 && laserY <= cloudY1 + 100) {
         numLasers--;
         shouldDisplayLaser = false;
         laserX = 100;
-        cloudX1 += 600;
+        cloudX1 += 800;
         cloudY1 = Math.floor((Math.random() * 500) + 1);
       }
       if(shouldDisplayLaser && laserX >= cloudX2 && laserX <= cloudX2 + 150 && laserY >= cloudY2 && laserY <= cloudY2 + 100) {
         numLasers--;
         shouldDisplayLaser = false;
         laserX = 100;
-        cloudX2 += 600;
+        cloudX2 += 800;
         cloudY2 = Math.floor((Math.random() * 500) + 1);
       }
       if(laserX > 600) {
