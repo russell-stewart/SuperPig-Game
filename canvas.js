@@ -34,6 +34,7 @@ var appleSpawnRate = 100;
 var keyLog = "";
 var hasCheated = false;
 var score = 0;
+var canvas
 //Changes speeds for chrome because chrome is weird and has a different refresh rate
 //if(navigator.userAgent.indexOf('Chrome') > 0) {
   //vo = 1.5;
@@ -221,6 +222,7 @@ function loadCanvas() {
 
 function doStuff(){
   game();
+
 }
 
 
@@ -402,7 +404,7 @@ function game() {
         }
 
       if(stillPlaying && score< 20) window.requestAnimationFrame(movePig);
-      else if(stillPlaying && score > 20);
+      else if(stillPlaying && score > 20) levelTwo();
       else {
         instructionScreen = true;
         fast.pause();
@@ -446,6 +448,42 @@ function game() {
       laser.src = 'laser.png';
     }
   } else alert('error!');
+}
+
+function levelTwo(){
+  var game = document.getElementById('game');
+  if(game.getContext('2d')) {
+    var context = game.getContext('2d');
+    var lingrad = context.createLinearGradient(0,0,0,600);
+    lingrad.addColorStop(0, '#417AFC');
+    lingrad.addColorStop(1, '#CCF8FF');
+    context.fillStyle = lingrad;
+    context.fillRect(0 , 0 , 600 , 600);
+
+    lingrad.addColorStop(.66, '#009933');
+    lingrad.addColorStop(1, '#00e64d');
+    context.fillStyle = lingrad;
+    context.fillRect(0, 400, 600, 400);
+    //draw hills
+    context.beginPath();
+    context.moveTo(0, 400);
+    context.quadraticCurveTo(50, 350, 100, 400);
+    context.moveTo(100, 400);
+    context.quadraticCurveTo(200, 300, 300, 400);
+    context.moveTo(280, 400);
+    context.quadraticCurveTo(355, 325, 430, 400);
+    context.moveTo(430, 400);
+    context.quadraticCurveTo(480, 350, 530, 400);
+    context.moveTo(520, 400);
+    context.quadraticCurveTo(620, 300, 720, 400);
+    context.strokeStyle = '#00b33c';
+    context.stroke();
+    context.fillStyle = '#00b33c';
+    context.fill();
+
+    context.save();
+  }
+
 }
 
 function doNothing(){}
