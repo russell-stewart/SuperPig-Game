@@ -450,10 +450,56 @@ function game() {
   } else alert('error!');
 }
 
+var loops = 0;
 function levelTwo(){
+  var g = -9.8;
+  vo = 6;
+  var t;
+  pigY = 400;
   var game = document.getElementById('game');
   if(game.getContext('2d')) {
     var context = game.getContext('2d');
+    drawBackground(context);
+
+    context.save();
+    var space = false;
+    addEventListener("keydown", function (e) {
+      var x = e.keyCode;
+      if(x == 32) space = true;
+      //alert(x);
+    }, false);
+    /*addEventListener("keyup", function (e) {
+      var x = e.keyCode;
+      if(x == 32) space = false;
+    }, false);*/
+
+
+    var intervalID = window.requestAnimationFrame(runGame);
+    function runGame() {
+      //drawBackground();
+      var now = (new Date).getTime();
+      var pig = new Image();
+      if(pigY < 400) {
+        loops++;
+        //pigY -= 4;
+        pigY -= g*(now - t)/1000 + vo;
+        if(pigY > 400) pigY = 400;
+      }
+      if(pigY == 400 && space) {
+        t = (new Date).getTime();
+        pigY -= vo;
+        space = false;
+      }
+      pig.addEventListener("load", function(){
+        context.drawImage(pig , 10 , pigY);
+
+      }, false);
+      pig.src = 'superpig.png';
+      window.requestAnimationFrame(runGame);
+    }
+  }
+
+  function drawBackground(context) {
     var lingrad = context.createLinearGradient(0,0,0,600);
     lingrad.addColorStop(0, '#417AFC');
     lingrad.addColorStop(1, '#CCF8FF');
@@ -480,16 +526,6 @@ function levelTwo(){
     context.stroke();
     context.fillStyle = '#00b33c';
     context.fill();
-
-    context.save();
-
-    var pig = new Image();
-    pigY = 400;
-    pig.addEventListener("load", function(){
-      context.drawImage(pig , 10 , pigY);
-    }, false);
-
-    pig.src = 'superpig.png';
   }
 
 }
