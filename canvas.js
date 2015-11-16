@@ -34,7 +34,8 @@ var appleSpawnRate = 100;
 var keyLog = "";
 var hasCheated = false;
 var score = 0;
-var canvas
+var canvas;
+var isLevel1 = true;
 //Changes speeds for chrome because chrome is weird and has a different refresh rate
 //if(navigator.userAgent.indexOf('Chrome') > 0) {
   //vo = 1.5;
@@ -246,11 +247,11 @@ function game() {
       var x = e.keyCode;
       keysDown[x] = true;
 
-      if(x == 38){
+      if(x == 38 && isLevel1){
         pigY -= 10;
       }
       if(x == 39 && numLasers > 0) shouldDisplayLaser = true;
-      if(x == 40){
+      if(x == 40 && isLevel1){
         pigY += 10;
       }
 
@@ -404,7 +405,10 @@ function game() {
         }
 
       if(stillPlaying && score< 20) window.requestAnimationFrame(movePig);
-      else if(stillPlaying && score > 20) levelTwo();
+      else if(stillPlaying && score > 20) {
+        levelTwo();
+        isLevel1 = false;
+      }
       else {
         instructionScreen = true;
         fast.pause();
@@ -450,10 +454,52 @@ function game() {
   } else alert('error!');
 }
 
+var loops = 0;
 function levelTwo(){
+  var g = -9.8;
+  vo = 6;
+  var t;
+  pigY = 400;
   var game = document.getElementById('game');
   if(game.getContext('2d')) {
     var context = game.getContext('2d');
+    drawBackground(context);
+
+    context.save();
+    var space = false;
+    addEventListener("keydown", function (e) {
+      var x = e.keyCode;
+      if(x == 32) space = true;
+      //alert(x);
+    }, false);
+
+
+    var intervalID = window.requestAnimationFrame(runGame);
+    function runGame() {
+      drawBackground(context);
+      var now = (new Date).getTime();
+      var pig = new Image();
+      if(pigY < 400) {
+        loops++;
+        //pigY -= 4;
+        pigY -= g*(now - t)/1000 + vo;
+        if(pigY > 400) pigY = 400;
+      }
+      if(pigY == 400 && space) {
+        t = (new Date).getTime();
+        pigY -= vo;
+        space = false;
+      }
+      pig.addEventListener("load", function(){
+        context.drawImage(pig , 10 , pigY);
+
+      }, false);
+      pig.src = 'superpig.png';
+      window.requestAnimationFrame(runGame);
+    }
+  }
+
+  function drawBackground(context) {
     var lingrad = context.createLinearGradient(0,0,0,600);
     lingrad.addColorStop(0, '#417AFC');
     lingrad.addColorStop(1, '#CCF8FF');
@@ -480,16 +526,6 @@ function levelTwo(){
     context.stroke();
     context.fillStyle = '#00b33c';
     context.fill();
-
-    context.save();
-
-    var pig = new Image();
-    pigY = 400;
-    pig.addEventListener("load", function(){
-      context.drawImage(pig , 10 , pigY);
-    }, false);
-
-    pig.src = 'superpig.png';
   }
 
 }
