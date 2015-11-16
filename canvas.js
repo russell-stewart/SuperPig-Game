@@ -33,6 +33,8 @@ var carrotSpawnRate = 400;//use 5000 for chrome, 3000 for safari
 var appleSpawnRate = 100;
 var keyLog = "";
 var hasCheated = false;
+var score = 0;
+var canvas
 //Changes speeds for chrome because chrome is weird and has a different refresh rate
 //if(navigator.userAgent.indexOf('Chrome') > 0) {
   //vo = 1.5;
@@ -194,7 +196,7 @@ function loadCanvas() {
                document.getElementById('canvas').style.display = 'none';
                instructionScreen = false;
                document.getElementById('game').style.display = 'inline';
-               game();
+               doStuff();
            }
          }
 
@@ -218,7 +220,10 @@ function loadCanvas() {
   }else alert('error');
 }
 
+function doStuff(){
+  game();
 
+}
 
 
 function game() {
@@ -267,7 +272,8 @@ function game() {
 
     context.save();
     var intervalID = window.requestAnimationFrame(movePig);
-    function movePig() {
+
+  function movePig() {
       if(pigY <= cloudY + 50 && pigY >= cloudY - 50 && cloudX <= 110 && cloudX >= 0) stillPlaying = false;
       if(pigY <= cloudY1 + 50 && pigY >= cloudY1 - 50 && cloudX1 <= 110 && cloudX1 >= 0) stillPlaying = false;
       if(pigY <= cloudY2 + 50 && pigY >= cloudY2 - 50 && cloudX2 <= 110 && cloudX2 >= 0) stillPlaying = false;
@@ -385,10 +391,10 @@ function game() {
         }
         if(shouldDisplayCarrot) context.drawImage(carrot , carrotX , carrotY , 50 , 50);
 
-
+        score = (Math.floor((now - start)/1000) + numApples*20 + numCloudsShot*10)
         context.fillStyle = '#000000';
         context.font = '20px OCR A Std';
-        context.fillText('Score: ' + (Math.floor((now - start)/1000) + numApples*20 + numCloudsShot*10) , 10 , 50);
+        context.fillText('Score: ' +  score, 10 , 50);
         if(numLasers > 0) {
           context.fillStyle = 'rgb(255 , 0 , 0)';
           if(!hasCheated){
@@ -397,7 +403,8 @@ function game() {
           else context.fillText('Lasers: all of them', 10, 70);
         }
 
-      if(stillPlaying) window.requestAnimationFrame(movePig);
+      if(stillPlaying && score< 20) window.requestAnimationFrame(movePig);
+      else if(stillPlaying && score > 20) levelTwo();
       else {
         instructionScreen = true;
         fast.pause();
@@ -441,6 +448,42 @@ function game() {
       laser.src = 'laser.png';
     }
   } else alert('error!');
+}
+
+function levelTwo(){
+  var game = document.getElementById('game');
+  if(game.getContext('2d')) {
+    var context = game.getContext('2d');
+    var lingrad = context.createLinearGradient(0,0,0,600);
+    lingrad.addColorStop(0, '#417AFC');
+    lingrad.addColorStop(1, '#CCF8FF');
+    context.fillStyle = lingrad;
+    context.fillRect(0 , 0 , 600 , 600);
+
+    lingrad.addColorStop(.66, '#009933');
+    lingrad.addColorStop(1, '#00e64d');
+    context.fillStyle = lingrad;
+    context.fillRect(0, 400, 600, 400);
+    //draw hills
+    context.beginPath();
+    context.moveTo(0, 400);
+    context.quadraticCurveTo(50, 350, 100, 400);
+    context.moveTo(100, 400);
+    context.quadraticCurveTo(200, 300, 300, 400);
+    context.moveTo(280, 400);
+    context.quadraticCurveTo(355, 325, 430, 400);
+    context.moveTo(430, 400);
+    context.quadraticCurveTo(480, 350, 530, 400);
+    context.moveTo(520, 400);
+    context.quadraticCurveTo(620, 300, 720, 400);
+    context.strokeStyle = '#00b33c';
+    context.stroke();
+    context.fillStyle = '#00b33c';
+    context.fill();
+
+    context.save();
+  }
+
 }
 
 function doNothing(){}
