@@ -482,6 +482,14 @@ function levelTwo(){
     context.fill();
 
     context.save();
+
+    var pig = new Image();
+    pigY = 400;
+    pig.addEventListener("load", function(){
+      context.drawImage(pig , 10 , pigY);
+    }, false);
+
+    pig.src = 'superpig.png';
   }
 
 }
