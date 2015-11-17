@@ -405,7 +405,7 @@ function game() {
         }
 
       if(stillPlaying && score< 20) window.requestAnimationFrame(movePig);
-      else if(stillPlaying && score > 20) {
+      else if(stillPlaying && score >= 20) {
         levelTwo();
         isLevel1 = false;
       }
@@ -436,6 +436,7 @@ function game() {
             shouldDisplayApple = false;
             shouldDisplayCarrot = false;
             appleX = 600;
+            hasCheated = false;
             carrotX = 600;
 
             game;
@@ -460,6 +461,7 @@ function levelTwo(){
   vo = 6;
   var t;
   pigY = 400;
+  pigX = 10;
   var game = document.getElementById('game');
   if(game.getContext('2d')) {
     var context = game.getContext('2d');
@@ -467,11 +469,20 @@ function levelTwo(){
 
     context.save();
     var space = false;
+    var right = false;
+    var left = false;
     addEventListener("keydown", function (e) {
       var x = e.keyCode;
       if(x == 32) space = true;
+      if(x == 39) right = true;
+      if(x == 37) left = true;
       //alert(x);
     }, false);
+    addEventListener("keyup" , function(e){
+      var x = e.keyCode;
+      if(x == 39) right = false;
+      if(x == 37) left = false;
+    } , false);
 
 
     var intervalID = window.requestAnimationFrame(runGame);
@@ -479,6 +490,12 @@ function levelTwo(){
       drawBackground(context);
       var now = (new Date).getTime();
       var pig = new Image();
+      if(right) {
+        pigX += vo;
+      }
+      if(left) {
+        pigX -= vo;
+      }
       if(pigY < 400) {
         loops++;
         //pigY -= 4;
@@ -491,7 +508,7 @@ function levelTwo(){
         space = false;
       }
       pig.addEventListener("load", function(){
-        context.drawImage(pig , 10 , pigY);
+        context.drawImage(pig , pigX , pigY);
 
       }, false);
       pig.src = 'superpig.png';
