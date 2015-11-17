@@ -243,21 +243,25 @@ function game() {
   cloudY2 = Math.floor((Math.random() * 600) + 1);
   if(!haveMadeKeyListener) {
     var keysDown = {};
+    var down = false;
+    var up = false;
     addEventListener("keydown", function (e) {
       var x = e.keyCode;
       keysDown[x] = true;
 
       if(x == 38 && isLevel1){
-        pigY -= 10;
+        up = true;
       }
       if(x == 39 && numLasers > 0) shouldDisplayLaser = true;
       if(x == 40 && isLevel1){
-        pigY += 10;
+        down = true;
       }
 
     }, false);
     addEventListener("keyup", function (e) {
-      delete keysDown[e.keyCode];
+      var x = e.keyCode;
+      if(x == 38 && isLevel1) up = false;
+      if(x == 40 && isLevel1) down = false;
       }, false);
       haveMadeKeyListener = true;
   }
@@ -275,6 +279,9 @@ function game() {
     var intervalID = window.requestAnimationFrame(movePig);
 
   function movePig() {
+      if(up) pigY -= 2;
+      if(down) pigY += 2;
+
       if(pigY <= cloudY + 50 && pigY >= cloudY - 50 && cloudX <= 110 && cloudX >= 0) stillPlaying = false;
       if(pigY <= cloudY1 + 50 && pigY >= cloudY1 - 50 && cloudX1 <= 110 && cloudX1 >= 0) stillPlaying = false;
       if(pigY <= cloudY2 + 50 && pigY >= cloudY2 - 50 && cloudX2 <= 110 && cloudX2 >= 0) stillPlaying = false;
@@ -473,7 +480,7 @@ function levelTwo(){
     var left = false;
     addEventListener("keydown", function (e) {
       var x = e.keyCode;
-      if(x == 32) space = true;
+      if(x == 32 || x == 38) space = true;
       if(x == 39) right = true;
       if(x == 37) left = true;
       //alert(x);
