@@ -469,6 +469,8 @@ function levelTwo(){
   var t;
   pigY = 400;
   pigX = 10;
+  var translation = 0;//how far over the pig has moved
+  var canJump = true;
   var game = document.getElementById('game');
   if(game.getContext('2d')) {
     var context = game.getContext('2d');
@@ -495,25 +497,31 @@ function levelTwo(){
     var intervalID = window.requestAnimationFrame(runGame);
     function runGame() {
       drawBackground(context);
+      drawObstacles(context);
       var now = (new Date).getTime();
       var pig = new Image();
-      if(right) {
+      if(right && pigX <= 350) {
         pigX += vo;
       }
-      if(left) {
+      if(left && pigX > vo) {
         pigX -= vo;
       }
       if(pigY < 400) {
         loops++;
         //pigY -= 4;
         pigY -= g*(now - t)/1000 + vo;
-        if(pigY > 400) pigY = 400;
+        if(pigY >= 400) {
+          pigY = 400;
+          canJump = true;
+        }
       }
-      if(pigY == 400 && space) {
+      if(pigY == 400 && space && canJump) {
         t = (new Date).getTime();
         pigY -= vo;
         space = false;
+        canJump = false;
       }
+      if(pigX >= 350) translation += vo;
       pig.addEventListener("load", function(){
         context.drawImage(pig , pigX , pigY);
 
@@ -552,6 +560,17 @@ function levelTwo(){
     context.fill();
   }
 
+  function drawObstacles(context) {
+    var bush = new Image();
+    var log = new Image();
+    log.addEventListener('load' , function(){
+      context.drawImage(bush , 300-translation , 400 , 200 , 100);
+      context.drawImage(bush , 900-translation , 400 , 100 , 100);
+      context.drawImage(log , 1500-translation , 400 , 300 , 100);
+    } , false);
+    bush.src = 'bush.png';
+    log.src = 'log.png';
+  }
 }
 
 function doNothing(){}
