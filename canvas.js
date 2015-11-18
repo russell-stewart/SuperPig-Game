@@ -175,8 +175,9 @@ function loadCanvas() {
         var apple = new Image();
         var carrot = new Image();
         var laser = new Image();
-        laser.addEventListener("load", function(){
-          context.drawImage(cloud, 50, 70, 100, 66);
+        var instructions = new Image();
+        instructions.addEventListener("load", function(){
+          /*context.drawImage(cloud, 50, 70, 100, 66);
           context.drawImage(apple, 75, 150, 50, 50 );
           context.drawImage(carrot, 75, 220, 50, 50);
           context.drawImage(laser, 75, 300, 50, 10);
@@ -184,9 +185,9 @@ function loadCanvas() {
           context.fillText("Use the up and down arrows to dodge clouds!", 160, 110);
           context.fillText("Eat apples to gain points!", 160, 180);
           context.fillText("Eat carrots to get laser vision!", 160, 250);
-          context.fillText("Press the right arrow to fire a laser!", 160, 310);
-          context.font = '20px OCR A Std';
-          context.fillText('Press space to begin' , 150 , 475);
+          context.fillText("Press the right arrow to fire a laser!", 160, 310); */
+          context.drawImage(instructions, 0, 0);
+
         }, false);
 
         addEventListener("keydown", function (e) {
@@ -211,7 +212,8 @@ function loadCanvas() {
         cloud.src = 'cloud1.png';
         apple.src = 'apple.png';
         carrot.src = 'carrot.png';
-        laser.src = 'laser.png'
+        laser.src = 'laser.png';
+        instructions.src = 'InstructionScreen.png';
       }
 
 
@@ -488,8 +490,8 @@ function levelTwo(){
       if(x == 37) left = true;
       //alert(x);
     }, false);
-    addEventListener("keyup" , function(e){
-      var x = e.keyCode;
+    addEventListener("keyup" , function(e1){
+      var x = e1.keyCode;
       if(x == 39) right = false;
       if(x == 37) left = false;
     } , false);
@@ -503,6 +505,7 @@ function levelTwo(){
       var pig = new Image();
       if(right && pigX <= 350) {
         pigX += vo;
+
       }
       if(left && pigX > vo) {
         pigX -= vo;
