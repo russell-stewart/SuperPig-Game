@@ -525,7 +525,7 @@ function levelTwo(){
         space = false;
         canJump = false;
       }
-      if(pigX >= 350) translation += vo;
+      if(pigX >= 350 && right) translation += vo;
       pig.addEventListener("load", function(){
         drawBackground(context);
         drawObstacles(context);
@@ -535,17 +535,16 @@ function levelTwo(){
       window.requestAnimationFrame(runGame);
     }
   }
-
+  var b1 = new Thornbush(300 , 400);
   function drawObstacles(context) {
     var bush = new Image();
-    var b1 = new Thornbush(300 , 400)
     var log = new Image();
     log.addEventListener('load' , function(){
       context.drawImage(bush , b1.x-translation , b1.y , b1.width , b1.height);
       context.drawImage(bush , 900-translation , 400 , 100 , 100);
       context.drawImage(log , 1500-translation , 400 , 300 , 100);
     } , false);
-    bush.src = b1.src;
+    bush.src = 'bush.png';
     log.src = 'log.png';
   }
 
@@ -554,7 +553,6 @@ function levelTwo(){
     this.y = y;
     this.width = width;
     this.height = height;
-    this.src = 'bush.png';
 
     this.isTouching = function(pX , pY) {
       if(pY <= y + 50 && pY >= y - 50 && x <= pX + 100 && x >= pX) return true;
