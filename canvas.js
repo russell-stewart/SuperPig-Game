@@ -535,59 +535,18 @@ function levelTwo(){
       window.requestAnimationFrame(runGame);
     }
   }
-  var b1 = new Thornbush(300 , 400);
+
   function drawObstacles(context) {
     var bush = new Image();
     var log = new Image();
     log.addEventListener('load' , function(){
-      context.drawImage(bush , b1.x-translation , b1.y , b1.width , b1.height);
+      context.drawImage(bush , 300-translation , 400 , 200 , 100);
       context.drawImage(bush , 900-translation , 400 , 100 , 100);
       context.drawImage(log , 1500-translation , 400 , 300 , 100);
     } , false);
     bush.src = 'bush.png';
     log.src = 'log.png';
   }
-
-  function Thornbush(x , y , width , height) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-
-    this.isTouching = function(pX , pY) {
-      if(pY <= y + 50 && pY >= y - 50 && x <= pX + 100 && x >= pX) return true;
-      else return false;
-    }
-  }
-}
-
-function drawBackground(context) {
-  var lingrad = context.createLinearGradient(0,0,0,600);
-  lingrad.addColorStop(0, '#417AFC');
-  lingrad.addColorStop(1, '#CCF8FF');
-  context.fillStyle = lingrad;
-  context.fillRect(0 , 0 , 600 , 600);
-
-  lingrad.addColorStop(.66, '#009933');
-  lingrad.addColorStop(1, '#00e64d');
-  context.fillStyle = lingrad;
-  context.fillRect(0, 400, 600, 400);
-  //draw hills
-  context.beginPath();
-  context.moveTo(0, 400);
-  context.quadraticCurveTo(50, 350, 100, 400);
-  context.moveTo(100, 400);
-  context.quadraticCurveTo(200, 300, 300, 400);
-  context.moveTo(280, 400);
-  context.quadraticCurveTo(355, 325, 430, 400);
-  context.moveTo(430, 400);
-  context.quadraticCurveTo(480, 350, 530, 400);
-  context.moveTo(520, 400);
-  context.quadraticCurveTo(620, 300, 720, 400);
-  context.strokeStyle = '#00b33c';
-  context.stroke();
-  context.fillStyle = '#00b33c';
-  context.fill();
 }
 
 function drawBackground(context) {
