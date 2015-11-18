@@ -562,14 +562,28 @@ function levelTwo(){
 
   function drawObstacles(context) {
     var bush = new Image();
+    var b1 = new Thornbush(300 , 400)
     var log = new Image();
     log.addEventListener('load' , function(){
-      context.drawImage(bush , 300-translation , 400 , 200 , 100);
+      context.drawImage(bush , b1.x-translation , b1.y , b1.width , b1.height);
       context.drawImage(bush , 900-translation , 400 , 100 , 100);
       context.drawImage(log , 1500-translation , 400 , 300 , 100);
     } , false);
-    bush.src = 'bush.png';
+    bush.src = b1.src;
     log.src = 'log.png';
+  }
+
+  function Thornbush(x , y , width , height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.src = 'bush.png';
+
+    this.isTouching = function(pX , pY) {
+      if(pY <= y + 50 && pY >= y - 50 && x <= pX + 100 && x >= pX) return true;
+      else return false;
+    }
   }
 }
 
