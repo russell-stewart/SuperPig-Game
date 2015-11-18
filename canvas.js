@@ -413,6 +413,7 @@ function game() {
 
       if(stillPlaying && score< 20) window.requestAnimationFrame(movePig);
       else if(stillPlaying && score >= 20) {
+        drawBackground(context);
         levelTwo();
         isLevel1 = false;
       }
@@ -474,7 +475,7 @@ function levelTwo(){
   var game = document.getElementById('game');
   if(game.getContext('2d')) {
     var context = game.getContext('2d');
-    drawBackground(context);
+    //drawBackground(context);
 
     context.save();
     var space = false;
@@ -496,7 +497,7 @@ function levelTwo(){
 
     var intervalID = window.requestAnimationFrame(runGame);
     function runGame() {
-      drawBackground(context);
+      //drawBackground(context);
       drawObstacles(context);
       var now = (new Date).getTime();
       var pig = new Image();
@@ -523,41 +524,13 @@ function levelTwo(){
       }
       if(pigX >= 350) translation += vo;
       pig.addEventListener("load", function(){
+        drawBackground(context);
+        drawObstacles(context);
         context.drawImage(pig , pigX , pigY);
-
       }, false);
       pig.src = 'superpig.png';
       window.requestAnimationFrame(runGame);
     }
-  }
-
-  function drawBackground(context) {
-    var lingrad = context.createLinearGradient(0,0,0,600);
-    lingrad.addColorStop(0, '#417AFC');
-    lingrad.addColorStop(1, '#CCF8FF');
-    context.fillStyle = lingrad;
-    context.fillRect(0 , 0 , 600 , 600);
-
-    lingrad.addColorStop(.66, '#009933');
-    lingrad.addColorStop(1, '#00e64d');
-    context.fillStyle = lingrad;
-    context.fillRect(0, 400, 600, 400);
-    //draw hills
-    context.beginPath();
-    context.moveTo(0, 400);
-    context.quadraticCurveTo(50, 350, 100, 400);
-    context.moveTo(100, 400);
-    context.quadraticCurveTo(200, 300, 300, 400);
-    context.moveTo(280, 400);
-    context.quadraticCurveTo(355, 325, 430, 400);
-    context.moveTo(430, 400);
-    context.quadraticCurveTo(480, 350, 530, 400);
-    context.moveTo(520, 400);
-    context.quadraticCurveTo(620, 300, 720, 400);
-    context.strokeStyle = '#00b33c';
-    context.stroke();
-    context.fillStyle = '#00b33c';
-    context.fill();
   }
 
   function drawObstacles(context) {
@@ -585,6 +558,35 @@ function levelTwo(){
       else return false;
     }
   }
+}
+
+function drawBackground(context) {
+  var lingrad = context.createLinearGradient(0,0,0,600);
+  lingrad.addColorStop(0, '#417AFC');
+  lingrad.addColorStop(1, '#CCF8FF');
+  context.fillStyle = lingrad;
+  context.fillRect(0 , 0 , 600 , 600);
+
+  lingrad.addColorStop(.66, '#009933');
+  lingrad.addColorStop(1, '#00e64d');
+  context.fillStyle = lingrad;
+  context.fillRect(0, 400, 600, 400);
+  //draw hills
+  context.beginPath();
+  context.moveTo(0, 400);
+  context.quadraticCurveTo(50, 350, 100, 400);
+  context.moveTo(100, 400);
+  context.quadraticCurveTo(200, 300, 300, 400);
+  context.moveTo(280, 400);
+  context.quadraticCurveTo(355, 325, 430, 400);
+  context.moveTo(430, 400);
+  context.quadraticCurveTo(480, 350, 530, 400);
+  context.moveTo(520, 400);
+  context.quadraticCurveTo(620, 300, 720, 400);
+  context.strokeStyle = '#00b33c';
+  context.stroke();
+  context.fillStyle = '#00b33c';
+  context.fill();
 }
 
 function doNothing(){}
