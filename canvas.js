@@ -527,7 +527,7 @@ function levelTwo(){
         }
       }
     var b = new Bush(300 , 400 , 200 , 100);
-    var b1 = new Bush(900 , 400 , 200 , 100);
+    var b1 = new Bush(750 , 400 , 200 , 100);
     var b2 = new Bush(1200 , 400 , 200 , 100);
     var bushes = [b , b1 , b2];
 
@@ -592,16 +592,40 @@ function levelTwo(){
       pig.src = 'superpig.png';
       bush.src = 'bush.png';
       log.src = 'log.png';
-      window.requestAnimationFrame(runGame);
+
+      var isTouchingBush = false;
+
+      for(var i = 0; i < bushes.length; i++) if(bushes[i].isTouchingPig()) isTouchingBush = true;
+
+      if(isTouchingBush) {
+        fast.pause();
+        fast.currentTime = 0;
+        die.play();
+        context.fillStyle = '#000000';
+        context.font = '80px OCR A Std';
+        context.textAlign = 'left';
+        context.fillText('Game over!' , 30 , 300);
+        context.font = '20px OCR A Std';
+        context.fillText('Press space to try again' , 125 , 450);
+
+        addEventListener('keydown' , function(e1){
+          var key = e1.keyCode;
+          if(key == 32){
+            die.pause();
+            die.currentTime = 0;
+            fast.play();
+            pigX = 10;
+            pigY = 400;
+            vo = 6;
+            translation = 0;
+
+            runGame();
+          }
+        } , false);
+      }
+      else window.requestAnimationFrame(runGame);
     }
   }
-/*
-  function drawObstacles(context) {
-    log.addEventListener('load' , function(){
-
-    } , false);
-
-  }*/
 }
 
 function drawBackground(context) {
