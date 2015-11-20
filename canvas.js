@@ -491,7 +491,7 @@ function levelTwo(){
       if(x == 37) left = true;
       //alert(x);
     }, false);
-    addEventListener("keyup" , function(e1){
+    addEventListener("keyup" , function(e1) {
       var x = e1.keyCode;
       if(x == 39) right = false;
       if(x == 37) left = false;
@@ -541,6 +541,22 @@ function levelTwo(){
         else return false;
       }
     }
+    function Mud(x , y , width , height) {
+      this.x = x;
+      this.y = y;
+      this.width = width;
+      this.height = height;
+
+      this.isTouchingPig = function() {
+        if(pigX + 120 >= this.x - translation && pigX <= this.x + this.width - translation - 30) {
+          if(pigY == 400) {
+            return true;
+          }
+          else return false;
+        }
+        else return false;
+      }
+    }
     var b = new Bush(300 , 400 , 200 , 100);
     var b1 = new Bush(750 , 400 , 200 , 100);
     var b2 = new Bush(1200 , 400 , 200 , 100);
@@ -551,13 +567,18 @@ function levelTwo(){
     var logs = [l, l1];
 
     var c1 = new Corn(200 , 300 , true);
-    var c2 = new Corn(500 , 400 , true);
-    var corn = [c1 , c2];
+    var c2 = new Corn(600 , 400 , true);
+    var corns = [c1 , c2];
 
+    var m1 = new Mud(2100 , 450 , 200 , 50);
+    var m2 = new Mud(2500 , 450 , 200 , 50);
+    var muds = [m1 , m2];
 
     var intervalID = window.requestAnimationFrame(runGame);
     function runGame() {
+      vo = 6;
       var now = (new Date).getTime();
+      var mud = new Image();
       var pig = new Image();
       var bush = new Image();
       var log = new Image();
@@ -572,11 +593,19 @@ function levelTwo(){
         }
       }
 
-      if(c1.isTouchingPig()) {
-        timeLimit += 10;
-        c1.display = false;
+      for(var i = 0 ; i < corns.length ; i++) {
+        if(corns[i].isTouchingPig()) {
+          timeLimit += 10;
+          corns[i].display = false;
+        }
       }
 
+      for(var i = 0 ; i < muds.length ; i++) {
+        if(muds[i].isTouchingPig()) {
+          vo = 1;
+          space = false;
+        }
+      }
 
       if(right && pigX <= 350) {
         pigX += vo;
@@ -587,7 +616,6 @@ function levelTwo(){
       }
 
       if(pigY < 400 && !isOnALog) {
-        loops++;
         //pigY -= 4;
         pigY -= g*(now - t)/1000 + vo;
         if(pigY >= 400) {
@@ -617,7 +645,8 @@ function levelTwo(){
         context.fillText('Time Left: ' + Math.floor(timeLimit - (now - start)/1000) , 10 , 50);
         for(var i = 0 ; i < bushes.length ; i++) context.drawImage(bush , bushes[i].x-translation , bushes[i].y , bushes[i].width , bushes[i].height);
         for(var i = 0 ; i < logs.length ; i++) context.drawImage(log , logs[i].x-translation , logs[i].y , logs[i].width , logs[i].height);
-        if(c1.display) context.drawImage(corn , c1.x - translation , c1.y , 50 , 50);
+        for(var i = 0 ; i < corns.length ; i++) if(corns[i].display) context.drawImage(corn , corns[i].x - translation , corns[i].y , 50 , 50);
+        for(var i = 0 ; i < muds.length ; i++) context.drawImage(mud , muds[i].x-translation , muds[i].y , muds[i].width , muds[i].height);
         context.drawImage(pig , pigX , pigY);
 
         for(var i = 0; i < bushes.length; i++) if(bushes[i].isTouchingPig()) isTouchingBush = true;
@@ -635,7 +664,7 @@ function levelTwo(){
           addEventListener('keydown' , function(e1){
             var key = e1.keyCode;
             if(key == 32){
-              die.pause();
+              /*die.pause();
               die.currentTime = 0;
               fast.play();
               pigX = 10;
@@ -645,7 +674,9 @@ function levelTwo(){
               start = (new Date).getTime();
               timeLimit = 100;
               isTouchingBush = false;
-              runGame();
+              loops++;
+              runGame();*/
+              location.reload();
             }
           } , false);
         }
@@ -654,6 +685,7 @@ function levelTwo(){
       bush.src = 'bush.png';
       log.src = 'log.png';
       corn.src = 'corn.png';
+      mud.src = 'mud.png';
 
 
       if(!isTouchingBush) window.requestAnimationFrame(runGame);
