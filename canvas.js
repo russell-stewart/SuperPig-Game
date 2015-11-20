@@ -243,7 +243,6 @@ function game() {
   cloudY1 = Math.floor((Math.random() * 600) + 1);
   cloudX2 = 1000;
   cloudY2 = Math.floor((Math.random() * 600) + 1);
-  if(!haveMadeKeyListener) {
     var keysDown = {};
     var down = false;
     var up = false;
@@ -266,7 +265,6 @@ function game() {
       if(x == 40 && isLevel1) down = false;
       }, false);
       haveMadeKeyListener = true;
-  }
 
   var game = document.getElementById('game');
   if(game.getContext('2d')) {
@@ -467,11 +465,14 @@ function game() {
 
 var loops = 0;
 function levelTwo(){
+  var timeLimit = 100;
+  var start = (new Date).getTime();
   var g = -9.8;
   vo = 6;
   var t;
   pigY = 400;
   pigX = 10;
+  var isTouchingBush = false;
   var translation = 0;//how far over the pig has moved
   var canJump = true;
   var game = document.getElementById('game');
@@ -512,20 +513,34 @@ function levelTwo(){
         else return false;
       }
     }
-      function Log(x , y , width , height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+    function Log(x , y , width , height) {
+      this.x = x;
+      this.y = y;
+      this.width = width;
+      this.height = height;
 
-        this.isPigStandingOn = function() {
-          if(pigX + 65 >= this.x - translation && pigX + 65 <= this.x + width - translation) {
-            if(pigY + 60 >= this.y - 5 && pigY + 60 <= this.y + 5) {
-              return true;
-            }else return false;
+      this.isPigStandingOn = function() {
+        if(pigX + 65 >= this.x - translation && pigX + 65 <= this.x + width - translation) {
+          if(pigY + 60 >= this.y - 5 && pigY + 60 <= this.y + 5) {
+            return true;
+          }else return false;
+        }else return false;
+      }
+    }
+    function Corn(x , y , display) {
+      this.x = x;
+      this.y = y;
+      this.display = display;
+
+      this.isTouchingPig = function() {
+        if(this.display && pigX + 120 >= this.x - translation && pigX <= this.x + 50 - translation) {
+          if(pigY <= this.y + 50 && pigY >= this.y) {
+            return true;
           }else return false;
         }
+        else return false;
       }
+    }
     var b = new Bush(300 , 400 , 200 , 100);
     var b1 = new Bush(750 , 400 , 200 , 100);
     var b2 = new Bush(1200 , 400 , 200 , 100);
@@ -535,6 +550,10 @@ function levelTwo(){
     var l1 = new Log(1800, 300, 300, 100);
     var logs = [l, l1];
 
+    var c1 = new Corn(200 , 300 , true);
+    var c2 = new Corn(500 , 400 , true);
+    var corn = [c1 , c2];
+
 
     var intervalID = window.requestAnimationFrame(runGame);
     function runGame() {
@@ -542,6 +561,7 @@ function levelTwo(){
       var pig = new Image();
       var bush = new Image();
       var log = new Image();
+      var corn = new Image();
       var isOnALog = false;
       var logPigisOn = -1;
 
@@ -551,6 +571,12 @@ function levelTwo(){
           logPigisOn = i;
         }
       }
+
+      if(c1.isTouchingPig()) {
+        timeLimit += 10;
+        c1.display = false;
+      }
+
 
       if(right && pigX <= 350) {
         pigX += vo;
@@ -584,46 +610,53 @@ function levelTwo(){
       if(pigX >= 350 && right) translation += vo;
       pig.addEventListener("load", function(){
         drawBackground(context);
-        //drawObstacles(context);
-        context.drawImage(pig , pigX , pigY);
+        context.textAlign = 'left';
+        context.fillStyle = '#000000';
+        context.font = '20px OCR A Std';
+        var now = (new Date).getTime();
+        context.fillText('Time Left: ' + Math.floor(timeLimit - (now - start)/1000) , 10 , 50);
         for(var i = 0 ; i < bushes.length ; i++) context.drawImage(bush , bushes[i].x-translation , bushes[i].y , bushes[i].width , bushes[i].height);
         for(var i = 0 ; i < logs.length ; i++) context.drawImage(log , logs[i].x-translation , logs[i].y , logs[i].width , logs[i].height);
+        if(c1.display) context.drawImage(corn , c1.x - translation , c1.y , 50 , 50);
+        context.drawImage(pig , pigX , pigY);
+
+        for(var i = 0; i < bushes.length; i++) if(bushes[i].isTouchingPig()) isTouchingBush = true;
+        if(Math.floor(timeLimit - (now - start)/1000) <= 0) isTouchingBush = true;
+        if(isTouchingBush) {
+          fast.pause();
+          fast.currentTime = 0;
+          die.play();
+          context.fillStyle = '#000000';
+          context.font = '80px OCR A Std';
+          context.textAlign = 'center';
+          context.fillText('Game over!' , 300 , 300);
+          context.font = '20px OCR A Std';
+          context.fillText('Press space to try again' , 300 , 450);
+          addEventListener('keydown' , function(e1){
+            var key = e1.keyCode;
+            if(key == 32){
+              die.pause();
+              die.currentTime = 0;
+              fast.play();
+              pigX = 10;
+              pigY = 400;
+              vo = 6;
+              translation = 0;
+              start = (new Date).getTime();
+              timeLimit = 100;
+              isTouchingBush = false;
+              runGame();
+            }
+          } , false);
+        }
       }, false);
       pig.src = 'superpig.png';
       bush.src = 'bush.png';
       log.src = 'log.png';
+      corn.src = 'corn.png';
 
-      var isTouchingBush = false;
 
-      for(var i = 0; i < bushes.length; i++) if(bushes[i].isTouchingPig()) isTouchingBush = true;
-
-      if(isTouchingBush) {
-        fast.pause();
-        fast.currentTime = 0;
-        die.play();
-        context.fillStyle = '#000000';
-        context.font = '80px OCR A Std';
-        context.textAlign = 'left';
-        context.fillText('Game over!' , 30 , 300);
-        context.font = '20px OCR A Std';
-        context.fillText('Press space to try again' , 125 , 450);
-
-        addEventListener('keydown' , function(e1){
-          var key = e1.keyCode;
-          if(key == 32){
-            die.pause();
-            die.currentTime = 0;
-            fast.play();
-            pigX = 10;
-            pigY = 400;
-            vo = 6;
-            translation = 0;
-
-            runGame();
-          }
-        } , false);
-      }
-      else window.requestAnimationFrame(runGame);
+      if(!isTouchingBush) window.requestAnimationFrame(runGame);
     }
   }
 }
