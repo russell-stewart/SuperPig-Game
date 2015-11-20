@@ -520,7 +520,7 @@ function levelTwo(){
 
         this.isPigStandingOn = function() {
           if(pigX + 65 >= this.x - translation && pigX + 65 <= this.x + width - translation) {
-            if(pigY + 80 >= this.y - 5 && pigY + 80 <= this.y + 5) {
+            if(pigY + 60 >= this.y - 5 && pigY + 60 <= this.y + 5) {
               return true;
             }else return false;
           }else return false;
@@ -532,7 +532,8 @@ function levelTwo(){
     var bushes = [b , b1 , b2];
 
     var l = new Log(1500 , 400 , 300 , 100);
-    var logs = [l];
+    var l1 = new Log(1800, 300, 300, 100);
+    var logs = [l, l1];
 
 
     var intervalID = window.requestAnimationFrame(runGame);
@@ -541,6 +542,15 @@ function levelTwo(){
       var pig = new Image();
       var bush = new Image();
       var log = new Image();
+      var isOnALog = false;
+      var logPigisOn = -1;
+
+      for(var i = 0; i < logs.length; i++){
+        if(logs[i].isPigStandingOn()){
+          isOnALog = true;
+          logPigisOn = i;
+        }
+      }
 
       if(right && pigX <= 350) {
         pigX += vo;
@@ -549,8 +559,8 @@ function levelTwo(){
       if(left && pigX > vo) {
         pigX -= vo;
       }
-      if(l.isPigStandingOn) console.log('log');
-      if(pigY < 400) {
+
+      if(pigY < 400 && !isOnALog) {
         loops++;
         //pigY -= 4;
         pigY -= g*(now - t)/1000 + vo;
@@ -560,6 +570,12 @@ function levelTwo(){
         }
       }
       if(pigY == 400 && space && canJump) {
+        t = (new Date).getTime();
+        pigY -= vo;
+        space = false;
+        canJump = false;
+      }
+      if(isOnALog && space){
         t = (new Date).getTime();
         pigY -= vo;
         space = false;
