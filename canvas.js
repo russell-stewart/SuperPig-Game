@@ -496,13 +496,52 @@ function levelTwo(){
       if(x == 37) left = false;
     } , false);
 
+    function Bush(x , y , width , height) {
+      this.x = x;
+      this.y = y;
+      this.width = width;
+      this.height = height;
+
+      this.isTouchingPig = function() {
+        if(pigX + 120 >= this.x - translation && pigX <= this.x + this.width - translation - 30) {
+          if(pigY <= this.y + this.height && pigY >= this.y) {
+            return true;
+          }
+          else return false;
+        }
+        else return false;
+      }
+    }
+      function Log(x , y , width , height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+
+        this.isPigStandingOn = function() {
+          if(pigX + 65 >= this.x - translation && pigX + 65 <= this.x + width - translation) {
+            if(pigY + 80 >= this.y - 5 && pigY + 80 <= this.y + 5) {
+              return true;
+            }else return false;
+          }else return false;
+        }
+      }
+    var b = new Bush(300 , 400 , 200 , 100);
+    var b1 = new Bush(900 , 400 , 200 , 100);
+    var b2 = new Bush(1200 , 400 , 200 , 100);
+    var bushes = [b , b1 , b2];
+
+    var l = new Log(1500 , 400 , 300 , 100);
+    var logs = [l];
+
 
     var intervalID = window.requestAnimationFrame(runGame);
     function runGame() {
-      //drawBackground(context);
-      drawObstacles(context);
       var now = (new Date).getTime();
       var pig = new Image();
+      var bush = new Image();
+      var log = new Image();
+
       if(right && pigX <= 350) {
         pigX += vo;
 
@@ -510,6 +549,7 @@ function levelTwo(){
       if(left && pigX > vo) {
         pigX -= vo;
       }
+      if(l.isPigStandingOn) console.log('log');
       if(pigY < 400) {
         loops++;
         //pigY -= 4;
@@ -525,28 +565,27 @@ function levelTwo(){
         space = false;
         canJump = false;
       }
-      if(pigX >= 350) translation += vo;
+      if(pigX >= 350 && right) translation += vo;
       pig.addEventListener("load", function(){
         drawBackground(context);
-        drawObstacles(context);
+        //drawObstacles(context);
         context.drawImage(pig , pigX , pigY);
+        for(var i = 0 ; i < bushes.length ; i++) context.drawImage(bush , bushes[i].x-translation , bushes[i].y , bushes[i].width , bushes[i].height);
+        for(var i = 0 ; i < logs.length ; i++) context.drawImage(log , logs[i].x-translation , logs[i].y , logs[i].width , logs[i].height);
       }, false);
       pig.src = 'superpig.png';
+      bush.src = 'bush.png';
+      log.src = 'log.png';
       window.requestAnimationFrame(runGame);
     }
   }
-
+/*
   function drawObstacles(context) {
-    var bush = new Image();
-    var log = new Image();
     log.addEventListener('load' , function(){
-      context.drawImage(bush , 300-translation , 400 , 200 , 100);
-      context.drawImage(bush , 900-translation , 400 , 100 , 100);
-      context.drawImage(log , 1500-translation , 400 , 300 , 100);
+
     } , false);
-    bush.src = 'bush.png';
-    log.src = 'log.png';
-  }
+
+  }*/
 }
 
 function drawBackground(context) {
