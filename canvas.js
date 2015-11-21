@@ -557,22 +557,28 @@ function levelTwo(){
         else return false;
       }
     }
-    var b = new Bush(300 , 400 , 200 , 100);
-    var b1 = new Bush(750 , 400 , 200 , 100);
-    var b2 = new Bush(1200 , 400 , 200 , 100);
-    var bushes = [b , b1 , b2];
+    var b1 = new Bush(300 , 400 , 200 , 100);
+    var b2 = new Bush(700 , 400 , 200 , 100);
+    var b3 = new Bush(1500 , 300 , 150 , 75);
+    var b4 = new Bush(2000 , 400 , 200 , 100);
+    var bushes = [b1 , b2 , b3 , b4];
 
-    var l = new Log(1500 , 400 , 300 , 100);
-    var l1 = new Log(1800, 300, 300, 100);
-    var logs = [l, l1];
+    var l1 = new Log(1100 , 350 , 200 , 100);
+    var l2 = new Log(1300 , 350 , 200 , 100);
+    var l3 = new Log(1500 , 350 , 200 , 100);
+    var l4 = new Log(1300 , 230 , 200 , 100);
+    var l5 = new Log(2700 , 350 , 200 , 100);
+    var logs = [l1, l2 , l3 , l4 , l5];
 
-    var c1 = new Corn(200 , 300 , true);
-    var c2 = new Corn(600 , 400 , true);
+    var c1 = new Corn(1450 , 150 , true);
+    var c2 = new Corn(2725 , 400 , true);
     var corns = [c1 , c2];
 
-    var m1 = new Mud(2100 , 450 , 200 , 50);
+    var m1 = new Mud(1500 , 450 , 200 , 50);
     var m2 = new Mud(2500 , 450 , 200 , 50);
-    var muds = [m1 , m2];
+    var m3 = new Mud(2700 , 450 , 200 , 50);
+    var m4 = new Mud(2900 , 450 , 200 , 50);
+    var muds = [m1 , m2 , m3 , m4];
 
     var intervalID = window.requestAnimationFrame(runGame);
     function runGame() {
