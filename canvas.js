@@ -413,9 +413,41 @@ function game() {
 
       if(stillPlaying && score< 20) window.requestAnimationFrame(movePig);
       else if(stillPlaying && score >= 20) {
+
         drawBackground(context);
-        levelTwo();
-        isLevel1 = false;
+        context.fillStyle = '#FFFFFF';
+        context.font = '20px OCR A Std';
+        context.textAlign = 'left';
+        context.fillText("Level Two Instructions" , 150 , 50);
+        var bush = new Image();
+        var log = new Image();
+        var corn = new Image();
+        var mud = new Image();
+        mud.addEventListener("load", function(){
+          context.drawImage(bush, 50, 70, 100, 66);
+          context.drawImage(log, 75, 150, 50, 50 );
+          context.drawImage(corn, 75, 220, 50, 50);
+          context.drawImage(mud, 75, 300, 50, 10);
+          context.font = '12px OCR A Std';
+          context.fillText("Jump to dodge bushes!", 160, 110);
+          context.fillText("Stand on logs!", 160, 180);
+          context.fillText("Eat corn to get more time!", 160, 250);
+          context.fillText("Avoid mud or you'll slow down!", 160, 310);
+          context.font = '20px OCR A Std';
+          context.fillText("Press space to begin", 150, 450);
+        }, false);
+        addEventListener('keydown' , function(e1){
+
+          var key = e1.keyCode;
+          if(key == 32){
+            levelTwo();
+            isLevel1 = false;
+          }
+        } , false);
+        bush.src = 'bush.png';
+        log.src = 'log.png';
+        corn.src = 'corn.png';
+        mud.src = 'mud.png';
       }
       else {
         instructionScreen = true;
@@ -459,6 +491,7 @@ function game() {
       if(shouldDisplayApple) apple.src = 'apple.png';
       if(shouldDisplayCarrot) carrot.src = 'carrot.png';
       laser.src = 'laser.png';
+
     }
   } else alert('error!');
 }
@@ -593,6 +626,7 @@ function levelTwo(){
     var m8 = new Mud(4800 , 450 , 100 , 50);
     var muds = [m1 , m2 , m3 , m4 , m5 , m6 , m7 , m8];
 
+
     var intervalID = window.requestAnimationFrame(runGame);
     function runGame() {
       vo = 6;
@@ -636,6 +670,7 @@ function levelTwo(){
 
       if(pigY < 400 && !isOnALog) {
         //pigY -= 4;
+        space = false;
         pigY -= g*(now - t)/1000 + vo;
         if(pigY >= 400) {
           pigY = 400;
