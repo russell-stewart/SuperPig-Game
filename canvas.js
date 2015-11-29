@@ -357,7 +357,7 @@ function game() {
 
         if(pigY < 0) pigY = 0;
         if(pigY > 520) pigY = 520;
-        context.drawImage(pig , 10 , pigY);
+        context.drawImage(pig , 10 , pigY , 140 , 100);
 
         if(cloudX > -150) cloudX -= vo + a*(now - start)/1000;
         else {
@@ -701,7 +701,7 @@ function levelTwo(){
         for(var i = 0 ; i < logs.length ; i++) context.drawImage(log , logs[i].x-translation , logs[i].y , logs[i].width , logs[i].height);
         for(var i = 0 ; i < corns.length ; i++) if(corns[i].display) context.drawImage(corn , corns[i].x - translation , corns[i].y , 50 , 50);
         for(var i = 0 ; i < muds.length ; i++) context.drawImage(mud , muds[i].x-translation , muds[i].y , muds[i].width , muds[i].height);
-        context.drawImage(pig , pigX , pigY);
+        context.drawImage(pig , pigX , pigY , 140 , 100);
 
         for(var i = 0; i < bushes.length; i++) if(bushes[i].isTouchingPig()) isTouchingBush = true;
         if(Math.floor(timeLimit - (now - start)/1000) <= 0) isTouchingBush = true;
