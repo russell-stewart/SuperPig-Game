@@ -43,6 +43,7 @@ var isLevel1 = true;
   //carrotSpawnRate = 5000;
 //}
 var instructionScreen = true;
+var instructionScreen2 = false;
 
 function loadCanvas() {
   var canvas = document.getElementById('canvas');
@@ -413,7 +414,7 @@ function game() {
 
       if(stillPlaying && score< 20) window.requestAnimationFrame(movePig);
       else if(stillPlaying && score >= 20) {
-
+        instructionScreen2 = true;
         drawBackground(context);
         context.fillStyle = '#FFFFFF';
         context.font = '20px OCR A Std';
@@ -439,11 +440,13 @@ function game() {
         addEventListener('keydown' , function(e1){
 
           var key = e1.keyCode;
-          if(key == 32){
+          if(key == 32 && instructionScreen2){
             levelTwo();
             isLevel1 = false;
+            instructionScreen2 = false;
           }
         } , false);
+        removeEventListener('keydown', function(e1){}, false);
         bush.src = 'bush.png';
         log.src = 'log.png';
         corn.src = 'corn.png';
@@ -498,6 +501,7 @@ function game() {
 
 var loops = 0;
 function levelTwo(){
+
   var timeLimit = 100;
   var start = (new Date).getTime();
   var g = -9.8;
@@ -716,21 +720,15 @@ function levelTwo(){
           context.font = '20px OCR A Std';
           context.fillText('Press space to try again' , 300 , 450);
           addEventListener('keydown' , function(e1){
+
             var key = e1.keyCode;
-            if(key == 32){
-              /*die.pause();
+            if(key == 32 && isTouchingBush){
+              isTouchingBush = false;
+              die.pause();
               die.currentTime = 0;
               fast.play();
-              pigX = 10;
-              pigY = 400;
-              vo = 6;
-              translation = 0;
-              start = (new Date).getTime();
-              timeLimit = 100;
-              isTouchingBush = false;
               loops++;
-              runGame();*/
-              location.reload();
+              levelTwo();
             }
           } , false);
         }
