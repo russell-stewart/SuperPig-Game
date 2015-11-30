@@ -67,7 +67,7 @@ function loadCanvas() {
        var x = e.keyCode;
        keysDown[x] = true;
        if(x == 32 || 67)startScreen = false;
-       if(37 <= x && x <= 40 || x == 65 || x == 66 || x == 67) keyLog += x;
+       if(37 <= x && x <= 40 || x == 65 || x == 66 || x == 67 || x == 76) keyLog += x;
        if(keyLog.indexOf("38384040373937396665") >= 0) {
          keyLog = "";
          numLasers = Number.MAX_VALUE;
@@ -86,9 +86,14 @@ function loadCanvas() {
     context.fillText('SuperPig' , 300 , 300);
 
     context.font = '20px OCR A Std';
-    context.fillText('Press space to begin' , 300 , 475);
-
-    context.fillText('Press c for credits' , 300 , 450);
+    context.fillText('Press space to begin' , 300 , 450);
+    context.fillText('Press c for credits' , 300 , 425);
+    context.fillText('Press l for level select' , 300 , 475);
+    /*var pigFront = new Image();
+    pigFront.addEventListener('load' , function(){
+      context.drawImage(pigFront , 236 , 305 , 128 , 100);
+    } , false);
+    pigFront.src = 'superpig-front.png';*/
 
     theme.play();
     theme.addEventListener('ended', function() {
@@ -137,7 +142,20 @@ function loadCanvas() {
         cloud3.src = 'cloud3.png';
       }
       else{
-        if(keyLog.indexOf('67') >= 0) {
+        if(keyLog.indexOf('76') >= 0) {
+          context.fillStyle = lingrad;
+          context.fillRect(0 , 0 , 600 , 600);
+          var lv1 = new Image();
+          var lv2 = new Image();
+          lv2.addEventListener('load' , function(){
+            context.drawImage(lv1 , 100 , 220);
+            context.drawImage(lv2 , 340 , 220);
+          } , false);
+          lv1.src = 'level1.png';
+          lv2.src = 'level2.png';
+
+        }
+        else if(keyLog.indexOf('67') >= 0) {
           context.fillStyle = lingrad;
           context.fillRect(0 , 0 , 600 , 600);
           context.font = '30 OCR A Std';
@@ -180,13 +198,16 @@ function loadCanvas() {
         instructions.addEventListener("load", function(){
           /*context.drawImage(cloud, 50, 70, 100, 66);
           context.drawImage(apple, 75, 150, 50, 50 );
-          context.drawImage(carrot, 75, 220, 50, 50);
-          context.drawImage(laser, 75, 300, 50, 10);
+          context.drawImage(carrot, 85, 220, 25, 50);
+          context.drawImage(laser, 70, 300, 50, 10);
           context.font = '12px OCR A Std';
           context.fillText("Use the up and down arrows to dodge clouds!", 160, 110);
           context.fillText("Eat apples to gain points!", 160, 180);
           context.fillText("Eat carrots to get laser vision!", 160, 250);
-          context.fillText("Press the right arrow to fire a laser!", 160, 310); */
+          context.fillText("Press the right arrow to fire a laser!", 160, 310);
+          context.textAlign = 'center';
+          context.font = '20 OCR A Std';
+          context.fillText('Press space to begin' , 300 , 450);*/
           context.drawImage(instructions, 0, 0);
 
         }, false);
@@ -354,11 +375,11 @@ function game() {
           if(laserX == 100) laserY = pigY + 20;
           laserX += 10*vo;
         }
-        if(shouldDisplayLaser) context.drawImage(laser , laserX , laserY , 50 , 10);
+        if(shouldDisplayLaser) context.drawImage(laser , laserX , laserY , 42 , 12);
 
         if(pigY < 0) pigY = 0;
         if(pigY > 520) pigY = 520;
-        context.drawImage(pig , 10 , pigY);
+        context.drawImage(pig , 10 , pigY , 140 , 100);
 
         if(cloudX > -150) cloudX -= vo + a*(now - start)/1000;
         else {
@@ -398,7 +419,7 @@ function game() {
             shouldDisplayCarrot = false;
           }
         }
-        if(shouldDisplayCarrot) context.drawImage(carrot , carrotX , carrotY , 50 , 50);
+        if(shouldDisplayCarrot) context.drawImage(carrot , carrotX , carrotY , 25 , 50);
 
         score = (Math.floor((now - start)/1000) + numApples*20 + numCloudsShot*10)
         context.fillStyle = '#000000';
@@ -424,11 +445,11 @@ function game() {
         var log = new Image();
         var corn = new Image();
         var mud = new Image();
-        mud.addEventListener("load", function(){
+        /*mud.addEventListener("load", function(){
           context.drawImage(bush, 50, 70, 100, 66);
-          context.drawImage(log, 75, 150, 50, 50 );
+          context.drawImage(log, 75, 160, 50, 30);
           context.drawImage(corn, 75, 220, 50, 50);
-          context.drawImage(mud, 75, 300, 50, 10);
+          context.drawImage(mud, 75, 300, 50, 20);
           context.font = '12px OCR A Std';
           context.fillText("Jump to dodge bushes!", 160, 110);
           context.fillText("Stand on logs!", 160, 180);
@@ -436,7 +457,12 @@ function game() {
           context.fillText("Avoid mud or you'll slow down!", 160, 310);
           context.font = '20px OCR A Std';
           context.fillText("Press space to begin", 150, 450);
-        }, false);
+        }, false);*/
+        var is2 = new Image();
+        is2.addEventListener('load' , function(){
+          context.drawImage(is2 , 0 , 0 , 600 , 600);
+        } , false);
+        is2.src = 'is2.png';
         addEventListener('keydown' , function(e1){
 
           var key = e1.keyCode;
@@ -596,23 +622,28 @@ function levelTwo(){
     }
     var b1 = new Bush(300 , 400 , 200 , 100);
     var b2 = new Bush(700 , 400 , 200 , 100);
-    var b3 = new Bush(1500 , 300 , 150 , 75);
-    var b4 = new Bush(2000 , 400 , 200 , 100);
+    var b3 = new Bush(1500 , 250 , 200 , 100);
+    var b4 = new Bush(2000 , 400 , 150 , 100);
     var b5 = new Bush(3300 , 400 , 200 , 100);
     var b6 = new Bush(4100 , 420 , 150 , 75);
-    var b7 = new Bush(4700 , 400 , 100 , 100);
-    var bushes = [b1 , b2 , b3 , b4 , b5 , b6 , b7];
+    var b7 = new Bush(4700 , 400 , 200 , 100);
+    var b8 = new Bush(5200 , 400 , 200 , 100);
+    var b9 = new Bush(5400 , 400 , 200 , 100);
+    var b10 = new Bush(5600 , 400 , 200 , 100);
+    var b11 = new Bush(5800 , 400 , 200 , 100);
+    var b12 = new Bush(6000 , 400 , 200 , 100);
+    var bushes = [b1 , b2 , b3 , b4 , b5 , b6 , b7 , b8 , b9 , b10 , b11 , b12];
 
-    var l1 = new Log(1100 , 350 , 200 , 100);
-    var l2 = new Log(1300 , 350 , 200 , 100);
-    var l3 = new Log(1500 , 350 , 200 , 100);
-    var l4 = new Log(1300 , 230 , 200 , 100);
-    var l5 = new Log(2700 , 350 , 200 , 100);
-    var l6 = new Log(5000 , 350 , 100 , 100);
-    var l7 = new Log(5200 , 280 , 100 , 100);
-    var l8 = new Log(5400 , 210 , 100 , 100);
-    var l9 = new Log(5600 , 140 , 100 , 100);
-    var l10 = new Log(5800 , 140 , 200 , 100);
+    var l1 = new Log(1100 , 350 , 200 , 50);
+    var l2 = new Log(1300 , 350 , 200 , 50);
+    var l3 = new Log(1500 , 350 , 200 , 50);
+    var l4 = new Log(1300 , 240 , 200 , 50);
+    var l5 = new Log(2700 , 350 , 200 , 50);
+    var l6 = new Log(5000 , 360 , 100 , 50);
+    var l7 = new Log(5200 , 280 , 100 , 50);
+    var l8 = new Log(5400 , 210 , 100 , 50);
+    var l9 = new Log(5600 , 140 , 100 , 50);
+    var l10 = new Log(5800 , 140 , 200 , 50);
     var logs = [l1, l2 , l3 , l4 , l5 , l6 , l7 , l8 , l9 , l10];
 
     var c1 = new Corn(1450 , 150 , true);
@@ -627,7 +658,7 @@ function levelTwo(){
     var m5 = new Mud(3500 , 450 , 200 , 50);
     var m6 = new Mud(3900 , 450 , 200 , 50);
     var m7 = new Mud(4600 , 450 , 100 , 50);
-    var m8 = new Mud(4800 , 450 , 100 , 50);
+    var m8 = new Mud(4900 , 450 , 100 , 50);
     var muds = [m1 , m2 , m3 , m4 , m5 , m6 , m7 , m8];
 
 
@@ -705,7 +736,7 @@ function levelTwo(){
         for(var i = 0 ; i < logs.length ; i++) context.drawImage(log , logs[i].x-translation , logs[i].y , logs[i].width , logs[i].height);
         for(var i = 0 ; i < corns.length ; i++) if(corns[i].display) context.drawImage(corn , corns[i].x - translation , corns[i].y , 50 , 50);
         for(var i = 0 ; i < muds.length ; i++) context.drawImage(mud , muds[i].x-translation , muds[i].y , muds[i].width , muds[i].height);
-        context.drawImage(pig , pigX , pigY);
+        context.drawImage(pig , pigX , pigY , 140 , 100);
 
         for(var i = 0; i < bushes.length; i++) if(bushes[i].isTouchingPig()) isTouchingBush = true;
         if(Math.floor(timeLimit - (now - start)/1000) <= 0) isTouchingBush = true;
