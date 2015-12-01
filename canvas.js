@@ -477,7 +477,7 @@ function game() {
           else context.fillText('Lasers: all of them', 10, 70);
         }
 
-      if(stillPlaying && score< 20 || infiniteMode) window.requestAnimationFrame(movePig);
+      if(stillPlaying && (score< 20 || infiniteMode)) window.requestAnimationFrame(movePig);
       else if(stillPlaying && score >= 20 && !infiniteMode) {
         instructionScreen2 = true;
         drawBackground(context);
