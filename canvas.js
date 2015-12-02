@@ -832,7 +832,7 @@ function drawBackground(context) {
   context.fillStyle = lingrad;
   context.fillRect(0, 400, 600, 400);
   //draw hills
-  context.beginPath();
+  /*context.beginPath();
   context.moveTo(0, 400);
   context.quadraticCurveTo(50, 350, 100, 400);
   context.moveTo(100, 400);
@@ -846,7 +846,19 @@ function drawBackground(context) {
   context.strokeStyle = '#00b33c';
   context.stroke();
   context.fillStyle = '#00b33c';
-  context.fill();
+  context.fill(); */
+  var hill1 = new Image();
+  var hill2 = new Image();
+  var hill3 = new Image();
+  var hill4 = new Image();
+  hill4.src = 'hill4.png';
+  hill3.src = 'hill3.png';
+  hill2.src = 'hill2.png';
+  hill1.src = 'hill1.png';
+  context.drawImage(hill1, 0, 310);
+  context.drawImage(hill2, 180, 342);
+  context.drawImage(hill3, 300, 342);
+  context.drawImage(hill4, 540, 330);
 }
 
 function doNothing(){}
