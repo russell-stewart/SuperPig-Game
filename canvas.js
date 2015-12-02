@@ -477,10 +477,15 @@ function game() {
           else context.fillText('Lasers: all of them', 10, 70);
         }
 
-      if(stillPlaying && (score< 20 || infiniteMode)) window.requestAnimationFrame(movePig);
-      else if(stillPlaying && score >= 20 && !infiniteMode) {
-        instructionScreen2 = true;
-        drawBackground(context);
+      if(stillPlaying && (score< 300 || infiniteMode)) window.requestAnimationFrame(movePig);
+      else if(stillPlaying && score >= 300 && !infiniteMode) {
+        context.fillStyle = '#000000';
+        context.font = '80px OCR A Std';
+        context.textAlign = 'center';
+        context.fillText('Level Complete!' , 300 , 300);
+        context.font = '20px OCR A Std';
+        context.fillText('Press space to continue' , 300 , 450);
+        /*drawBackground(context);
         context.fillStyle = '#FFFFFF';
         context.font = '20px OCR A Std';
         context.textAlign = 'left';
@@ -489,7 +494,7 @@ function game() {
         var log = new Image();
         var corn = new Image();
         var mud = new Image();
-        /*mud.addEventListener("load", function(){
+        mud.addEventListener("load", function(){
           context.drawImage(bush, 50, 70, 100, 66);
           context.drawImage(log, 75, 160, 50, 30);
           context.drawImage(corn, 75, 220, 50, 50);
@@ -572,7 +577,8 @@ function game() {
 var loops = 0;
 function levelTwo(){
 
-  var timeLimit = 100;
+  var timeLimit = 50;
+  var hasWon = false;
   var start = (new Date).getTime();
   var g = -9.8;
   vo = 6;
@@ -677,8 +683,8 @@ function levelTwo(){
     var b11 = new Bush(5800 , 400 , 200 , 100);
     var b12 = new Bush(6000 , 400 , 200 , 100);
     var b13 = new Bush(6500 , 400 , 200 , 100);
-    var b14 = new Bush(9000 , 90 , 100 , 50);
-    var b15 = new Bush(9200 , 90 , 100 , 50);
+    var b14 = new Bush(9000 , 160 , 100 , 50);
+    var b15 = new Bush(9200 , 160 , 100 , 50);
     var b16 = new Bush(8600 , 400 , 200 , 100);
     var b17 = new Bush(8800 , 400 , 200 , 100);
     var b18 = new Bush(9000 , 400 , 200 , 100);
@@ -751,7 +757,7 @@ function levelTwo(){
 
       for(var i = 0 ; i < corns.length ; i++) {
         if(corns[i].isTouchingPig()) {
-          timeLimit += 10;
+          timeLimit += 3;
           corns[i].display = false;
         }
       }
@@ -792,7 +798,10 @@ function levelTwo(){
         space = false;
         canJump = false;
       }
+
       if(pigX >= 350 && right) translation += vo;
+
+      if(pigX >= 9000-translation && pigX <= 9200-translation && pigY >= 100 && pigY <= 233) hasWon = true;
       pig.addEventListener("load", function(){
         drawBackground(context);
         context.textAlign = 'left';
@@ -805,7 +814,7 @@ function levelTwo(){
         for(var i = 0 ; i < corns.length ; i++) if(corns[i].display) context.drawImage(corn , corns[i].x - translation , corns[i].y , 50 , 50);
         for(var i = 0 ; i < muds.length ; i++) context.drawImage(mud , muds[i].x-translation , muds[i].y , muds[i].width , muds[i].height);
         context.drawImage(pig , pigX , pigY , 140 , 100);
-        context.drawImage(flag , 9100 , 110 , 30 , 100);
+        context.drawImage(flag , 9050-translation , 100 , 100 , 133);
 
         for(var i = 0; i < bushes.length; i++) if(bushes[i].isTouchingPig()) isTouchingBush = true;
         if(Math.floor(timeLimit - (now - start)/1000) <= 0) isTouchingBush = true;
@@ -832,16 +841,22 @@ function levelTwo(){
             }
           } , false);
         }
+        else if(hasWon) {
+          context.fillStyle = '#000000';
+          context.font = '40px OCR A Std';
+          context.textAlign = 'center';
+          context.fillText('Level Complete!' , 300 , 300);
+          context.font = '20px OCR A Std';
+          context.fillText('Press space to continue' , 300 , 450);
+        }
+        else if(!isTouchingBush && !hasWon) window.requestAnimationFrame(runGame);
       }, false);
       pig.src = 'superpig.png';
       bush.src = 'bush.png';
       log.src = 'log.png';
       corn.src = 'corn.png';
       mud.src = 'mud.png';
-      flag.src = 'corn.png';
-
-
-      if(!isTouchingBush) window.requestAnimationFrame(runGame);
+      flag.src = 'flag.png';
     }
   }
 }
