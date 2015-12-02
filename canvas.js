@@ -36,6 +36,7 @@ var hasCheated = false;
 var score = 0;
 var canvas;
 var isLevel1 = true;
+var infiniteMode = false;
 //Changes speeds for chrome because chrome is weird and has a different refresh rate
 //if(navigator.userAgent.indexOf('Chrome') > 0) {
   //vo = 1.5;
@@ -44,6 +45,7 @@ var isLevel1 = true;
 //}
 var instructionScreen = true;
 var instructionScreen2 = false;
+var displayLevelScreen = false;
 
 function loadCanvas() {
   var canvas = document.getElementById('canvas');
@@ -67,6 +69,7 @@ function loadCanvas() {
        var x = e.keyCode;
        keysDown[x] = true;
        if(x == 32 || 67)startScreen = false;
+       if(x == 76) displayLevelScreen = true;
        if(37 <= x && x <= 40 || x == 65 || x == 66 || x == 67 || x == 76) keyLog += x;
        if(keyLog.indexOf("38384040373937396665") >= 0) {
          keyLog = "";
@@ -142,14 +145,55 @@ function loadCanvas() {
         cloud3.src = 'cloud3.png';
       }
       else{
-        if(keyLog.indexOf('76') >= 0) {
+        if(keyLog.indexOf('76') >= 0 && displayLevelScreen) {
           context.fillStyle = lingrad;
           context.fillRect(0 , 0 , 600 , 600);
+          displayLevelScreen = false;
           var lv1 = new Image();
           var lv2 = new Image();
           lv2.addEventListener('load' , function(){
             context.drawImage(lv1 , 100 , 220);
             context.drawImage(lv2 , 340 , 220);
+            context.font = '20px OCR A Std';
+            context.textAlign = 'center';
+            context.fillStyle = '#FFFFFF';
+            context.fillText('Choose a level to play on free play', 295, 100);
+            context.fillText('Press 1', 175, 440);
+            context.fillText('Press 2', 415, 440);
+            context.fillText('Press space to play adventure mode', 295, 500);
+
+
+            addEventListener("keydown", function (e) {
+              var x = e.keyCode;
+              keysDown[x] = true;
+              if(x==32){
+                if(instructionScreen){
+                  document.getElementById('canvas').style.display = 'none';
+                  instructionScreen = false;
+                  document.getElementById('game').style.display = 'inline';
+                  game();
+                }
+              }
+              if(x==49){
+                infiniteMode = true;
+                if(instructionScreen){
+                  document.getElementById('canvas').style.display = 'none';
+                  instructionScreen = false;
+                  document.getElementById('game').style.display = 'inline';
+                  game();
+              }
+            }
+              if(x==50){
+                infiniteMode = true;
+                if(instructionScreen){
+                  document.getElementById('canvas').style.display = 'none';
+                  instructionScreen = false;
+                  document.getElementById('game').style.display = 'inline';
+                  levelTwo();
+              }
+            }
+
+            }, false);
           } , false);
           lv1.src = 'level1.png';
           lv2.src = 'level2.png';
@@ -433,8 +477,8 @@ function game() {
           else context.fillText('Lasers: all of them', 10, 70);
         }
 
-      if(stillPlaying && score< 20) window.requestAnimationFrame(movePig);
-      else if(stillPlaying && score >= 20) {
+      if(stillPlaying && (score< 20 || infiniteMode)) window.requestAnimationFrame(movePig);
+      else if(stillPlaying && score >= 20 && !infiniteMode) {
         instructionScreen2 = true;
         drawBackground(context);
         context.fillStyle = '#FFFFFF';
