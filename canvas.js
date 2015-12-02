@@ -676,7 +676,14 @@ function levelTwo(){
     var b10 = new Bush(5600 , 400 , 200 , 100);
     var b11 = new Bush(5800 , 400 , 200 , 100);
     var b12 = new Bush(6000 , 400 , 200 , 100);
-    var bushes = [b1 , b2 , b3 , b4 , b5 , b6 , b7 , b8 , b9 , b10 , b11 , b12];
+    var b13 = new Bush(6500 , 400 , 200 , 100);
+    var b14 = new Bush(9000 , 90 , 100 , 50);
+    var b15 = new Bush(9200 , 90 , 100 , 50);
+    var b16 = new Bush(8600 , 400 , 200 , 100);
+    var b17 = new Bush(8800 , 400 , 200 , 100);
+    var b18 = new Bush(9000 , 400 , 200 , 100);
+    var b19 = new Bush(9200 , 400 , 200 , 100);
+    var bushes = [b1 , b2 , b3 , b4 , b5 , b6 , b7 , b8 , b9 , b10 , b11 , b12 , b13 , b14 , b15 , b16 , b17 , b18 , b19];
 
     var l1 = new Log(1100 , 350 , 200 , 50);
     var l2 = new Log(1300 , 350 , 200 , 50);
@@ -688,11 +695,20 @@ function levelTwo(){
     var l8 = new Log(5400 , 210 , 100 , 50);
     var l9 = new Log(5600 , 140 , 100 , 50);
     var l10 = new Log(5800 , 140 , 200 , 50);
-    var logs = [l1, l2 , l3 , l4 , l5 , l6 , l7 , l8 , l9 , l10];
+    var l11 = new Log(6900 , 400 , 100 , 50);
+    var l12 = new Log(7200 , 400 , 100 , 50);
+    var l13 = new Log(7400 , 400 , 100 , 50);
+    var l14 = new Log(7900 , 400 , 100 , 50);
+    var l15 = new Log(8400 , 360 , 100 , 50);
+    var l16 = new Log(8600 , 280 , 100 , 50);
+    var l17 = new Log(8800 , 210 , 100 , 50);
+    var l18 = new Log(9000 , 210 , 200 , 50);
+    var l19 = new Log(9200 , 210 , 100 , 50);
+    var logs = [l1, l2 , l3 , l4 , l5 , l6 , l7 , l8 , l9 , l10 , l11 , l12 , l13 , l14 , l15 , l16 , l17 , l18 , l19];
 
     var c1 = new Corn(1450 , 150 , true);
     var c2 = new Corn(2725 , 400 , true);
-    var c3 = new Corn(6300 , 300 , true);
+    var c3 = new Corn(6300 , 140 , true);
     var corns = [c1 , c2 , c3];
 
     var m1 = new Mud(1500 , 450 , 200 , 50);
@@ -703,8 +719,16 @@ function levelTwo(){
     var m6 = new Mud(3900 , 450 , 200 , 50);
     var m7 = new Mud(4600 , 450 , 100 , 50);
     var m8 = new Mud(4900 , 450 , 100 , 50);
-    var muds = [m1 , m2 , m3 , m4 , m5 , m6 , m7 , m8];
+    var m9 = new Mud(7000 , 450 , 200 , 50);
+    var m10 = new Mud(7200 , 450 , 200 , 50);
+    var m11 = new Mud(7400 , 450 , 200 , 50);
+    var m12 = new Mud(7600 , 450 , 200 , 50);
+    var m13 = new Mud(7800 , 450 , 200 , 50);
+    var m14 = new Mud(8000 , 450 , 200 , 50);
+    var m15 = new Mud(8200 , 450 , 200 , 50);
+    var muds = [m1 , m2 , m3 , m4 , m5 , m6 , m7 , m8 , m9 , m10 , m11 , m12 , m13 , m14 , m15];
 
+    var flag = new Image();
 
     var intervalID = window.requestAnimationFrame(runGame);
     function runGame() {
@@ -781,6 +805,7 @@ function levelTwo(){
         for(var i = 0 ; i < corns.length ; i++) if(corns[i].display) context.drawImage(corn , corns[i].x - translation , corns[i].y , 50 , 50);
         for(var i = 0 ; i < muds.length ; i++) context.drawImage(mud , muds[i].x-translation , muds[i].y , muds[i].width , muds[i].height);
         context.drawImage(pig , pigX , pigY , 140 , 100);
+        context.drawImage(flag , 9100 , 110 , 30 , 100);
 
         for(var i = 0; i < bushes.length; i++) if(bushes[i].isTouchingPig()) isTouchingBush = true;
         if(Math.floor(timeLimit - (now - start)/1000) <= 0) isTouchingBush = true;
@@ -813,6 +838,7 @@ function levelTwo(){
       log.src = 'log.png';
       corn.src = 'corn.png';
       mud.src = 'mud.png';
+      flag.src = 'corn.png';
 
 
       if(!isTouchingBush) window.requestAnimationFrame(runGame);
