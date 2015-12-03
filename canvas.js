@@ -477,55 +477,65 @@ function game() {
           else context.fillText('Lasers: all of them', 10, 70);
         }
 
-      if(stillPlaying && (score< 300 || infiniteMode)) window.requestAnimationFrame(movePig);
-      else if(stillPlaying && score >= 300 && !infiniteMode) {
+      if(stillPlaying && (score< 3 || infiniteMode)) window.requestAnimationFrame(movePig);
+      else if(stillPlaying && score >= 3 && !infiniteMode) {
         context.fillStyle = '#000000';
-        context.font = '80px OCR A Std';
+        context.font = '40px OCR A Std';
         context.textAlign = 'center';
         context.fillText('Level Complete!' , 300 , 300);
         context.font = '20px OCR A Std';
         context.fillText('Press space to continue' , 300 , 450);
-        /*drawBackground(context);
-        context.fillStyle = '#FFFFFF';
-        context.font = '20px OCR A Std';
-        context.textAlign = 'left';
-        context.fillText("Level Two Instructions" , 150 , 50);
-        var bush = new Image();
-        var log = new Image();
-        var corn = new Image();
-        var mud = new Image();
-        mud.addEventListener("load", function(){
-          context.drawImage(bush, 50, 70, 100, 66);
-          context.drawImage(log, 75, 160, 50, 30);
-          context.drawImage(corn, 75, 220, 50, 50);
-          context.drawImage(mud, 75, 300, 50, 20);
-          context.font = '12px OCR A Std';
-          context.fillText("Jump to dodge bushes!", 160, 110);
-          context.fillText("Stand on logs!", 160, 180);
-          context.fillText("Eat corn to get more time!", 160, 250);
-          context.fillText("Avoid mud or you'll slow down!", 160, 310);
-          context.font = '20px OCR A Std';
-          context.fillText("Press space to begin", 150, 450);
-        }, false);*/
-        var is2 = new Image();
-        is2.addEventListener('load' , function(){
-          context.drawImage(is2 , 0 , 0 , 600 , 600);
-        } , false);
-        is2.src = 'is2.png';
-        addEventListener('keydown' , function(e1){
-
-          var key = e1.keyCode;
+        instructionScreen2 = true;
+        addEventListener('keydown', function(e){
+          var key = e.keyCode;
           if(key == 32 && instructionScreen2){
-            levelTwo();
-            isLevel1 = false;
-            instructionScreen2 = false;
+
+            /*drawBackground(context);
+            context.fillStyle = '#FFFFFF';
+            context.font = '20px OCR A Std';
+            context.textAlign = 'left';
+            context.fillText("Level Two Instructions" , 150 , 50);
+            var bush = new Image();
+            var log = new Image();
+            var corn = new Image();
+            var mud = new Image();
+            mud.addEventListener("load", function(){
+              context.drawImage(bush, 50, 70, 100, 66);
+              context.drawImage(log, 75, 160, 50, 30);
+              context.drawImage(corn, 75, 220, 50, 50);
+              context.drawImage(mud, 75, 300, 50, 20);
+              context.font = '12px OCR A Std';
+              context.fillText("Jump to dodge bushes!", 160, 110);
+              context.fillText("Stand on logs!", 160, 180);
+              context.fillText("Eat corn to get more time!", 160, 250);
+              context.fillText("Avoid mud or you'll slow down!", 160, 310);
+              context.font = '20px OCR A Std';
+              context.fillText("Press space to begin", 150, 450);
+            }, false); */
+            var is2 = new Image();
+            is2.addEventListener('load' , function(){
+              context.drawImage(is2 , 0 , 0 , 600 , 600);
+            } , false);
+            is2.src = 'is2.png';
+            addEventListener('keydown' , function(e1){
+
+              var key = e1.keyCode;
+              if(key == 32 && instructionScreen2){
+                isLevel1 = false;
+                instructionScreen2 = false;
+                levelTwo();
+            }
+          } , false);
+          removeEventListener('keydown', function(e1){}, false);
+          /*bush.src = 'bush.png';
+          log.src = 'log.png';
+          corn.src = 'corn.png';
+          mud.src = 'mud.png'; */
           }
-        } , false);
-        removeEventListener('keydown', function(e1){}, false);
-        bush.src = 'bush.png';
-        log.src = 'log.png';
-        corn.src = 'corn.png';
-        mud.src = 'mud.png';
+
+        }, false);
+        removeEventListener('keydown', function(e){}, false);
+
       }
       else {
         instructionScreen = true;
@@ -533,11 +543,21 @@ function game() {
         fast.currentTime = 0;
         die.play();
         context.fillStyle = '#000000';
-        context.font = '80px OCR A Std';
-        context.textAlign = 'left';
-        context.fillText('Game over!' , 30 , 300);
-        context.font = '20px OCR A Std';
-        context.fillText('Press space to try again' , 125 , 450);
+        if(!infiniteMode){
+          context.font = '80px OCR A Std';
+          context.textAlign = 'left';
+          context.fillText('Game over!' , 30 , 300);
+          context.font = '20px OCR A Std';
+          context.fillText('Press space to try again' , 125 , 450);
+        }
+        else{
+          context.font = '40px OCR A Std';
+          context.textAlign = 'left';
+          context.fillText('Score: ' + score , 175 , 300);
+          context.font = '20px OCR A Std';
+          context.fillText('Press space to try again' , 125 , 450);
+
+        }
 
         addEventListener('keydown' , function(e1){
 
@@ -577,7 +597,7 @@ function game() {
 var loops = 0;
 function levelTwo(){
 
-  var timeLimit = 50;
+  var timeLimit = 60;
   var hasWon = false;
   var start = (new Date).getTime();
   var g = -9.8;
@@ -735,6 +755,7 @@ function levelTwo(){
     var muds = [m1 , m2 , m3 , m4 , m5 , m6 , m7 , m8 , m9 , m10 , m11 , m12 , m13 , m14 , m15];
 
     var flag = new Image();
+    var numCorn = 0;
 
     var intervalID = window.requestAnimationFrame(runGame);
     function runGame() {
@@ -747,6 +768,8 @@ function levelTwo(){
       var corn = new Image();
       var isOnALog = false;
       var logPigisOn = -1;
+      var time = Math.floor((now - start)/1000);
+
 
       for(var i = 0; i < logs.length; i++){
         if(logs[i].isPigStandingOn()){
@@ -758,6 +781,9 @@ function levelTwo(){
       for(var i = 0 ; i < corns.length ; i++) {
         if(corns[i].isTouchingPig()) {
           timeLimit += 3;
+          if(infiniteMode){
+            numCorn++;
+          }
           corns[i].display = false;
         }
       }
@@ -808,7 +834,10 @@ function levelTwo(){
         context.fillStyle = '#000000';
         context.font = '20px OCR A Std';
         var now = (new Date).getTime();
-        context.fillText('Time Left: ' + Math.floor(timeLimit - (now - start)/1000) , 10 , 50);
+        if(!infiniteMode){
+          context.fillText('Time Left: ' + Math.floor(timeLimit - (now - start)/1000) , 10 , 50);
+        }
+        else context.fillText('Time: ' + (time - numCorn*3), 10, 50);
         for(var i = 0 ; i < bushes.length ; i++) context.drawImage(bush , bushes[i].x-translation , bushes[i].y , bushes[i].width , bushes[i].height);
         for(var i = 0 ; i < logs.length ; i++) context.drawImage(log , logs[i].x-translation , logs[i].y , logs[i].width , logs[i].height);
         for(var i = 0 ; i < corns.length ; i++) if(corns[i].display) context.drawImage(corn , corns[i].x - translation , corns[i].y , 50 , 50);
@@ -817,7 +846,7 @@ function levelTwo(){
         context.drawImage(flag , 9050-translation , 100 , 100 , 133);
 
         for(var i = 0; i < bushes.length; i++) if(bushes[i].isTouchingPig()) isTouchingBush = true;
-        if(Math.floor(timeLimit - (now - start)/1000) <= 0) isTouchingBush = true;
+        if(Math.floor(timeLimit - (now - start)/1000) <= 0 && !infiniteMode) isTouchingBush = true;
         if(isTouchingBush) {
           fast.pause();
           fast.currentTime = 0;
@@ -845,9 +874,31 @@ function levelTwo(){
           context.fillStyle = '#000000';
           context.font = '40px OCR A Std';
           context.textAlign = 'center';
-          context.fillText('Level Complete!' , 300 , 300);
-          context.font = '20px OCR A Std';
-          context.fillText('Press space to continue' , 300 , 450);
+          if(!infiniteMode){
+            context.fillText('Level Complete!' , 300 , 300);
+            context.font = '20px OCR A Std';
+            context.fillText('Press space to continue' , 300 , 450);
+            addEventListener('keydown' , function(e1){
+
+              var key = e1.keyCode;
+              if(key == 32){
+                location.reload();
+              }
+            } , false);
+          }
+          else{
+            context.fillText('Time: ' + (time - numCorn*3) + ' seconds', 300, 300);
+            context.font = '20px OCR A Std';
+            context.fillText('Press space to try again' , 300 , 450);
+            addEventListener('keydown' , function(e1){
+
+              var key = e1.keyCode;
+              if(key == 32){
+                levelTwo();
+              }
+            } , false);
+
+          }
         }
         else if(!isTouchingBush && !hasWon) window.requestAnimationFrame(runGame);
       }, false);
@@ -896,10 +947,11 @@ function drawBackground(context) {
   hill3.src = 'hill3.png';
   hill2.src = 'hill2.png';
   hill1.src = 'hill1.png';
-  context.drawImage(hill1, 0, 310);
-  context.drawImage(hill2, 180, 342);
-  context.drawImage(hill3, 300, 342);
-  context.drawImage(hill4, 540, 330);
+    context.drawImage(hill1, 0, 310);
+    context.drawImage(hill2, 180, 342);
+    context.drawImage(hill3, 300, 342);
+    context.drawImage(hill4, 540, 330);
+
 }
 
 function doNothing(){}
