@@ -510,6 +510,7 @@ function game() {
         var is2 = new Image();
         is2.addEventListener('load' , function(){
           context.drawImage(is2 , 0 , 0 , 600 , 600);
+          instructionScreen2 = true;
         } , false);
         is2.src = 'is2.png';
         addEventListener('keydown' , function(e1){
