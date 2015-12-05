@@ -562,7 +562,7 @@ function game() {
         } , false);
       }
       } , false);
-      pig.src = 'superpig.png';
+      pig.src = 'pig2.png';
       cloud1.src = 'cloud1.png';
       cloud2.src = 'cloud2.png';
       cloud3.src = 'cloud3.png';
@@ -575,8 +575,8 @@ function game() {
 }
 
 var loops = 0;
+var isJumping = false;
 function levelTwo(){
-
   var timeLimit = 50;
   var hasWon = false;
   var start = (new Date).getTime();
@@ -781,11 +781,12 @@ function levelTwo(){
         //pigY -= 4;
         space = false;
         pigY -= g*(now - t)/1000 + vo;
+        isJumping = true;
         if(pigY >= 400) {
           pigY = 400;
           canJump = true;
         }
-      }
+      }else isJumping = false;
       if(pigY == 400 && space && canJump) {
         t = (new Date).getTime();
         pigY -= vo;
@@ -851,7 +852,8 @@ function levelTwo(){
         }
         else if(!isTouchingBush && !hasWon) window.requestAnimationFrame(runGame);
       }, false);
-      pig.src = 'superpig.png';
+      if(isJumping) pig.src = 'pig2.png';
+      else pig.src = 'pig.gif';
       bush.src = 'bush.png';
       log.src = 'log.png';
       corn.src = 'corn.png';
