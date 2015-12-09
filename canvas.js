@@ -151,13 +151,17 @@ function loadCanvas() {
           displayLevelScreen = false;
           var lv1 = new Image();
           var lv2 = new Image();
+          var locked = new Image();
           lv2.addEventListener('load' , function(){
             context.drawImage(lv1 , 100 , 220);
             context.drawImage(lv2 , 340 , 220);
             context.font = '20px OCR A Std';
             context.textAlign = 'center';
             context.fillStyle = '#FFFFFF';
-            context.fillText('Choose a level to play on free play', 295, 100);
+            console.log('level 1: ' + localStorage.level1);
+            console.log('level 2:' + localStorage.level2);
+            context.fillText('After beating a level,', 300, 100);
+            context.fillText(' you can play it on free play!' , 300 , 130);
             context.fillText('Press 1', 175, 440);
             context.fillText('Press 2', 415, 440);
             context.fillText('Press space to play adventure mode', 295, 500);
@@ -174,7 +178,7 @@ function loadCanvas() {
                   game();
                 }
               }
-              if(x==49){
+              if(x==49 && localStorage.level1 == 'true'){
                 infiniteMode = true;
                 theme.pause();
                 theme.currentTime = 0;
@@ -186,7 +190,7 @@ function loadCanvas() {
                   game();
               }
             }
-              if(x==50){
+              if(x==50 && localStorage.level2 == 'true'){
                 infiniteMode = true;
                 theme.pause();
                 theme.currentTime = 0;
@@ -201,8 +205,10 @@ function loadCanvas() {
 
             }, false);
           } , false);
-          lv1.src = 'level1.png';
-          lv2.src = 'level2.png';
+          if(localStorage.level1 == 'true') lv1.src = 'level1.png';
+          else lv1.src = 'locked.png';
+          if(localStorage.level2 == 'true')lv2.src = 'level2.png';
+          else lv2.src = 'locked.png';
         }
         else if(keyLog.indexOf('67') >= 0) {
           context.fillStyle = lingrad;
@@ -488,7 +494,7 @@ function game() {
         context.font = '40px OCR A Std';
         context.textAlign = 'center';
         context.fillText('Level Complete!' , 300 , 300);
-        document.cookie = 'level1=true';
+        localStorage.setItem('level1' , 'true');
         context.font = '20px OCR A Std';
         context.fillText('Press space to continue' , 300 , 450);
 
@@ -860,7 +866,7 @@ function levelTwo(){
           context.fillStyle = '#000000';
           context.font = '40px OCR A Std';
           context.textAlign = 'center';
-          document.cookie = 'level2=true';
+          localStorage.setItem('levelTwo' , 'true');
           if(!infiniteMode){
             context.fillText('Level Complete!' , 300 , 300);
             context.font = '20px OCR A Std';
@@ -880,8 +886,10 @@ function levelTwo(){
             addEventListener('keydown' , function(e1){
 
               var key = e1.keyCode;
-              if(key == 32){
+              if(key == 32 && hasWon){
+                hasWon = false;
                 levelTwo();
+                removeEventListener('keydown' , e1);
               }
             } , false);
 
