@@ -33,6 +33,10 @@ var carrotSpawnRate = 400;//use 5000 for chrome, 3000 for safari
 var appleSpawnRate = 100;
 var keyLog = "";
 var hasCheated = false;
+var score = 0;
+var canvas;
+var isLevel1 = true;
+var infiniteMode = false;
 //Changes speeds for chrome because chrome is weird and has a different refresh rate
 //if(navigator.userAgent.indexOf('Chrome') > 0) {
   //vo = 1.5;
@@ -40,6 +44,8 @@ var hasCheated = false;
   //carrotSpawnRate = 5000;
 //}
 var instructionScreen = true;
+var instructionScreen2 = false;
+var displayLevelScreen = false;
 
 function loadCanvas() {
   var canvas = document.getElementById('canvas');
@@ -63,7 +69,8 @@ function loadCanvas() {
        var x = e.keyCode;
        keysDown[x] = true;
        if(x == 32 || 67)startScreen = false;
-       if(37 <= x && x <= 40 || x == 65 || x == 66 || x == 67) keyLog += x;
+       if(x == 76) displayLevelScreen = true;
+       if(37 <= x && x <= 40 || x == 65 || x == 66 || x == 67 || x == 76) keyLog += x;
        if(keyLog.indexOf("38384040373937396665") >= 0) {
          keyLog = "";
          numLasers = Number.MAX_VALUE;
@@ -82,9 +89,14 @@ function loadCanvas() {
     context.fillText('SuperPig' , 300 , 300);
 
     context.font = '20px OCR A Std';
-    context.fillText('Press space to begin' , 300 , 475);
-
-    context.fillText('Press c for credits' , 300 , 450);
+    context.fillText('Press space to begin' , 300 , 450);
+    context.fillText('Press c for credits' , 300 , 425);
+    context.fillText('Press l for level select' , 300 , 475);
+    /*var pigFront = new Image();
+    pigFront.addEventListener('load' , function(){
+      context.drawImage(pigFront , 236 , 305 , 128 , 100);
+    } , false);
+    pigFront.src = 'superpig-front.png';*/
 
     theme.play();
     theme.addEventListener('ended', function() {
@@ -133,7 +145,72 @@ function loadCanvas() {
         cloud3.src = 'cloud3.png';
       }
       else{
-        if(keyLog.indexOf('67') >= 0) {
+        if(keyLog.indexOf('76') >= 0 && displayLevelScreen) {
+          context.fillStyle = lingrad;
+          context.fillRect(0 , 0 , 600 , 600);
+          displayLevelScreen = false;
+          var lv1 = new Image();
+          var lv2 = new Image();
+          var locked = new Image();
+          lv2.addEventListener('load' , function(){
+            context.drawImage(lv1 , 100 , 220);
+            context.drawImage(lv2 , 340 , 220);
+            context.font = '20px OCR A Std';
+            context.textAlign = 'center';
+            context.fillStyle = '#FFFFFF';
+            console.log('level 1: ' + localStorage.level1);
+            console.log('level 2:' + localStorage.level2);
+            context.fillText('After beating a level,', 300, 100);
+            context.fillText(' you can play it on free play!' , 300 , 130);
+            context.fillText('Press 1', 175, 440);
+            context.fillText('Press 2', 415, 440);
+            context.fillText('Press space to play adventure mode', 295, 500);
+
+
+            addEventListener("keydown", function (e) {
+              var x = e.keyCode;
+              keysDown[x] = true;
+              if(x==32){
+                if(instructionScreen){
+                  document.getElementById('canvas').style.display = 'none';
+                  instructionScreen = false;
+                  document.getElementById('game').style.display = 'inline';
+                  game();
+                }
+              }
+              if(x==49 && localStorage.level1 == 'true'){
+                infiniteMode = true;
+                theme.pause();
+                theme.currentTime = 0;
+                fast.play();
+                if(instructionScreen){
+                  document.getElementById('canvas').style.display = 'none';
+                  instructionScreen = false;
+                  document.getElementById('game').style.display = 'inline';
+                  game();
+              }
+            }
+              if(x==50 && localStorage.level2 == 'true'){
+                infiniteMode = true;
+                theme.pause();
+                theme.currentTime = 0;
+                fast.play();
+                if(instructionScreen){
+                  document.getElementById('canvas').style.display = 'none';
+                  instructionScreen = false;
+                  document.getElementById('game').style.display = 'inline';
+                  levelTwo();
+              }
+            }
+
+            }, false);
+          } , false);
+          if(localStorage.level1 == 'true') lv1.src = 'level1.png';
+          else lv1.src = 'locked.png';
+          if(localStorage.level2 == 'true')lv2.src = 'level2.png';
+          else lv2.src = 'locked.png';
+        }
+        else if(keyLog.indexOf('67') >= 0) {
           context.fillStyle = lingrad;
           context.fillRect(0 , 0 , 600 , 600);
           context.font = '30 OCR A Std';
@@ -172,18 +249,22 @@ function loadCanvas() {
         var apple = new Image();
         var carrot = new Image();
         var laser = new Image();
-        laser.addEventListener("load", function(){
-          context.drawImage(cloud, 50, 70, 100, 66);
+        var instructions = new Image();
+        instructions.addEventListener("load", function(){
+          /*context.drawImage(cloud, 50, 70, 100, 66);
           context.drawImage(apple, 75, 150, 50, 50 );
-          context.drawImage(carrot, 75, 220, 50, 50);
-          context.drawImage(laser, 75, 300, 50, 10);
+          context.drawImage(carrot, 85, 220, 25, 50);
+          context.drawImage(laser, 70, 300, 50, 10);
           context.font = '12px OCR A Std';
           context.fillText("Use the up and down arrows to dodge clouds!", 160, 110);
           context.fillText("Eat apples to gain points!", 160, 180);
           context.fillText("Eat carrots to get laser vision!", 160, 250);
           context.fillText("Press the right arrow to fire a laser!", 160, 310);
-          context.font = '20px OCR A Std';
-          context.fillText('Press space to begin' , 150 , 475);
+          context.textAlign = 'center';
+          context.font = '20 OCR A Std';
+          context.fillText('Press space to begin' , 300 , 450);*/
+          context.drawImage(instructions, 0, 0);
+
         }, false);
 
         addEventListener("keydown", function (e) {
@@ -194,7 +275,7 @@ function loadCanvas() {
                document.getElementById('canvas').style.display = 'none';
                instructionScreen = false;
                document.getElementById('game').style.display = 'inline';
-               game();
+               doStuff();
            }
          }
 
@@ -208,7 +289,8 @@ function loadCanvas() {
         cloud.src = 'cloud1.png';
         apple.src = 'apple.png';
         carrot.src = 'carrot.png';
-        laser.src = 'laser.png'
+        laser.src = 'laser.png';
+        instructions.src = 'InstructionScreen.png';
       }
 
 
@@ -218,7 +300,10 @@ function loadCanvas() {
   }else alert('error');
 }
 
+function doStuff(){
+  game();
 
+}
 
 
 function game() {
@@ -235,26 +320,28 @@ function game() {
   cloudY1 = Math.floor((Math.random() * 600) + 1);
   cloudX2 = 1000;
   cloudY2 = Math.floor((Math.random() * 600) + 1);
-  if(!haveMadeKeyListener) {
     var keysDown = {};
+    var down = false;
+    var up = false;
     addEventListener("keydown", function (e) {
       var x = e.keyCode;
       keysDown[x] = true;
 
-      if(x == 38){
-        pigY -= 10;
+      if(x == 38 && isLevel1){
+        up = true;
       }
       if(x == 39 && numLasers > 0) shouldDisplayLaser = true;
-      if(x == 40){
-        pigY += 10;
+      if(x == 40 && isLevel1){
+        down = true;
       }
 
     }, false);
     addEventListener("keyup", function (e) {
-      delete keysDown[e.keyCode];
+      var x = e.keyCode;
+      if(x == 38 && isLevel1) up = false;
+      if(x == 40 && isLevel1) down = false;
       }, false);
       haveMadeKeyListener = true;
-  }
 
   var game = document.getElementById('game');
   if(game.getContext('2d')) {
@@ -267,7 +354,11 @@ function game() {
 
     context.save();
     var intervalID = window.requestAnimationFrame(movePig);
-    function movePig() {
+
+  function movePig() {
+      if(up) pigY -= 2;
+      if(down) pigY += 2;
+
       if(pigY <= cloudY + 50 && pigY >= cloudY - 50 && cloudX <= 110 && cloudX >= 0) stillPlaying = false;
       if(pigY <= cloudY1 + 50 && pigY >= cloudY1 - 50 && cloudX1 <= 110 && cloudX1 >= 0) stillPlaying = false;
       if(pigY <= cloudY2 + 50 && pigY >= cloudY2 - 50 && cloudX2 <= 110 && cloudX2 >= 0) stillPlaying = false;
@@ -339,11 +430,11 @@ function game() {
           if(laserX == 100) laserY = pigY + 20;
           laserX += 10*vo;
         }
-        if(shouldDisplayLaser) context.drawImage(laser , laserX , laserY , 50 , 10);
+        if(shouldDisplayLaser) context.drawImage(laser , laserX , laserY , 42 , 12);
 
         if(pigY < 0) pigY = 0;
         if(pigY > 520) pigY = 520;
-        context.drawImage(pig , 10 , pigY);
+        context.drawImage(pig , 10 , pigY , 140 , 100);
 
         if(cloudX > -150) cloudX -= vo + a*(now - start)/1000;
         else {
@@ -383,12 +474,12 @@ function game() {
             shouldDisplayCarrot = false;
           }
         }
-        if(shouldDisplayCarrot) context.drawImage(carrot , carrotX , carrotY , 50 , 50);
+        if(shouldDisplayCarrot) context.drawImage(carrot , carrotX , carrotY , 25 , 50);
 
-
+        score = (Math.floor((now - start)/1000) + numApples*20 + numCloudsShot*10)
         context.fillStyle = '#000000';
         context.font = '20px OCR A Std';
-        context.fillText('Score: ' + (Math.floor((now - start)/1000) + numApples*20 + numCloudsShot*10) , 10 , 50);
+        context.fillText('Score: ' +  score, 10 , 50);
         if(numLasers > 0) {
           context.fillStyle = 'rgb(255 , 0 , 0)';
           if(!hasCheated){
@@ -397,18 +488,61 @@ function game() {
           else context.fillText('Lasers: all of them', 10, 70);
         }
 
-      if(stillPlaying) window.requestAnimationFrame(movePig);
+      if(stillPlaying && (score< 300 || infiniteMode)) window.requestAnimationFrame(movePig);
+      else if(stillPlaying && score >= 300 && !infiniteMode) {
+        context.fillStyle = '#000000';
+        context.font = '40px OCR A Std';
+        context.textAlign = 'center';
+        context.fillText('Level Complete!' , 300 , 300);
+        localStorage.setItem('level1' , 'true');
+        context.font = '20px OCR A Std';
+        context.fillText('Press space to continue' , 300 , 450);
+
+        instructionScreen2 = true;
+        addEventListener('keydown', function(e){
+          var key = e.keyCode;
+
+          if(key == 32 && instructionScreen2){
+            var is2 = new Image();
+            is2.addEventListener('load' , function(){
+              context.drawImage(is2 , 0 , 0 , 600 , 600);
+            } , false);
+            is2.src = 'is2.png';
+            addEventListener('keydown' , function(e1){
+
+              var key = e1.keyCode;
+              if(key == 32 && instructionScreen2){
+                isLevel1 = false;
+                instructionScreen2 = false;
+                levelTwo();
+              }
+          } , false);
+          removeEventListener('keydown', e1, false);
+          }
+        } , false);
+        removeEventListener('keydown', e, false);
+      }
       else {
         instructionScreen = true;
         fast.pause();
         fast.currentTime = 0;
         die.play();
         context.fillStyle = '#000000';
-        context.font = '80px OCR A Std';
-        context.textAlign = 'left';
-        context.fillText('Game over!' , 30 , 300);
-        context.font = '20px OCR A Std';
-        context.fillText('Press space to try again' , 125 , 450);
+        if(!infiniteMode){
+          context.font = '80px OCR A Std';
+          context.textAlign = 'left';
+          context.fillText('Game over!' , 30 , 300);
+          context.font = '20px OCR A Std';
+          context.fillText('Press space to try again' , 125 , 450);
+        }
+        else{
+          context.font = '40px OCR A Std';
+          context.textAlign = 'left';
+          context.fillText('Score: ' + score , 175 , 300);
+          context.font = '20px OCR A Std';
+          context.fillText('Press space to try again' , 125 , 450);
+
+        }
 
         addEventListener('keydown' , function(e1){
 
@@ -425,6 +559,7 @@ function game() {
             shouldDisplayApple = false;
             shouldDisplayCarrot = false;
             appleX = 600;
+            hasCheated = false;
             carrotX = 600;
 
             game;
@@ -432,15 +567,388 @@ function game() {
         } , false);
       }
       } , false);
-      pig.src = 'superpig.png';
+      pig.src = 'pig2.png';
       cloud1.src = 'cloud1.png';
       cloud2.src = 'cloud2.png';
       cloud3.src = 'cloud3.png';
       if(shouldDisplayApple) apple.src = 'apple.png';
       if(shouldDisplayCarrot) carrot.src = 'carrot.png';
       laser.src = 'laser.png';
+
     }
   } else alert('error!');
+}
+
+var loops = 0;
+var isJumping = false;
+var isStanding = false;
+function levelTwo(){
+  var timeLimit = 50;
+  var hasWon = false;
+  var start = (new Date).getTime();
+  var g = -9.8;
+  vo = 6;
+  var t;
+  pigY = 400;
+  pigX = 10;
+  var isTouchingBush = false;
+  var translation = 0;//how far over the pig has moved
+  var canJump = true;
+  var game = document.getElementById('game');
+  if(game.getContext('2d')) {
+    var context = game.getContext('2d');
+    //drawBackground(context);
+
+    context.save();
+    var space = false;
+    var right = false;
+    var left = false;
+    addEventListener("keydown", function (e) {
+      var x = e.keyCode;
+      if(x == 32 || x == 38) space = true;
+      if(x == 39) right = true;
+      if(x == 37) left = true;
+      //alert(x);
+    }, false);
+    addEventListener("keyup" , function(e1) {
+      var x = e1.keyCode;
+      if(x == 39) right = false;
+      if(x == 37) left = false;
+    } , false);
+
+    function Bush(x , y , width , height) {
+      this.x = x;
+      this.y = y;
+      this.width = width;
+      this.height = height;
+
+      this.isTouchingPig = function() {
+        if(pigX + 120 >= this.x - translation && pigX <= this.x + this.width - translation - 30) {
+          if(pigY <= this.y + this.height && pigY >= this.y) {
+            return true;
+          }
+          else return false;
+        }
+        else return false;
+      }
+    }
+    function Log(x , y , width , height) {
+      this.x = x;
+      this.y = y;
+      this.width = width;
+      this.height = height;
+
+      this.isPigStandingOn = function() {
+        if(pigX + 65 >= this.x - translation && pigX + 65 <= this.x + width - translation) {
+          if(pigY + 60 >= this.y - 5 && pigY + 60 <= this.y + 5) {
+            return true;
+          }else return false;
+        }else return false;
+      }
+    }
+    function Corn(x , y , display) {
+      this.x = x;
+      this.y = y;
+      this.display = display;
+
+      this.isTouchingPig = function() {
+        if(this.display && pigX + 120 >= this.x - translation && pigX <= this.x + 50 - translation) {
+          if(pigY <= this.y + 50 && pigY >= this.y) {
+            return true;
+          }else return false;
+        }
+        else return false;
+      }
+    }
+    function Mud(x , y , width , height) {
+      this.x = x;
+      this.y = y;
+      this.width = width;
+      this.height = height;
+
+      this.isTouchingPig = function() {
+        if(pigX + 120 >= this.x - translation && pigX <= this.x + this.width - translation - 30) {
+          if(pigY == 400) {
+            return true;
+          }
+          else return false;
+        }
+        else return false;
+      }
+    }
+    var b1 = new Bush(300 , 400 , 200 , 100);
+    var b2 = new Bush(700 , 400 , 200 , 100);
+    var b3 = new Bush(1500 , 250 , 200 , 100);
+    var b4 = new Bush(2000 , 400 , 150 , 100);
+    var b5 = new Bush(3300 , 400 , 200 , 100);
+    var b6 = new Bush(4100 , 420 , 150 , 75);
+    var b7 = new Bush(4700 , 400 , 200 , 100);
+    var b8 = new Bush(5200 , 400 , 200 , 100);
+    var b9 = new Bush(5400 , 400 , 200 , 100);
+    var b10 = new Bush(5600 , 400 , 200 , 100);
+    var b11 = new Bush(5800 , 400 , 200 , 100);
+    var b12 = new Bush(6000 , 400 , 200 , 100);
+    var b13 = new Bush(6500 , 400 , 200 , 100);
+    var b14 = new Bush(9000 , 160 , 100 , 50);
+    var b15 = new Bush(9200 , 160 , 100 , 50);
+    var b16 = new Bush(8600 , 400 , 200 , 100);
+    var b17 = new Bush(8800 , 400 , 200 , 100);
+    var b18 = new Bush(9000 , 400 , 200 , 100);
+    var b19 = new Bush(9200 , 400 , 200 , 100);
+    var bushes = [b1 , b2 , b3 , b4 , b5 , b6 , b7 , b8 , b9 , b10 , b11 , b12 , b13 , b14 , b15 , b16 , b17 , b18 , b19];
+
+    var l1 = new Log(1100 , 350 , 200 , 50);
+    var l2 = new Log(1300 , 350 , 200 , 50);
+    var l3 = new Log(1500 , 350 , 200 , 50);
+    var l4 = new Log(1300 , 240 , 200 , 50);
+    var l5 = new Log(2700 , 350 , 200 , 50);
+    var l6 = new Log(5000 , 360 , 100 , 50);
+    var l7 = new Log(5200 , 280 , 100 , 50);
+    var l8 = new Log(5400 , 210 , 100 , 50);
+    var l9 = new Log(5600 , 140 , 100 , 50);
+    var l10 = new Log(5800 , 140 , 200 , 50);
+    var l11 = new Log(6900 , 400 , 100 , 50);
+    var l12 = new Log(7200 , 400 , 100 , 50);
+    var l13 = new Log(7400 , 400 , 100 , 50);
+    var l14 = new Log(7900 , 400 , 100 , 50);
+    var l15 = new Log(8400 , 360 , 100 , 50);
+    var l16 = new Log(8600 , 280 , 100 , 50);
+    var l17 = new Log(8800 , 210 , 100 , 50);
+    var l18 = new Log(9000 , 210 , 200 , 50);
+    var l19 = new Log(9200 , 210 , 100 , 50);
+    var logs = [l1, l2 , l3 , l4 , l5 , l6 , l7 , l8 , l9 , l10 , l11 , l12 , l13 , l14 , l15 , l16 , l17 , l18 , l19];
+
+    var c1 = new Corn(1450 , 150 , true);
+    var c2 = new Corn(2725 , 400 , true);
+    var c3 = new Corn(6300 , 140 , true);
+    var corns = [c1 , c2 , c3];
+
+    var m1 = new Mud(1500 , 450 , 200 , 50);
+    var m2 = new Mud(2500 , 450 , 200 , 50);
+    var m3 = new Mud(2700 , 450 , 200 , 50);
+    var m4 = new Mud(2900 , 450 , 200 , 50);
+    var m5 = new Mud(3500 , 450 , 200 , 50);
+    var m6 = new Mud(3900 , 450 , 200 , 50);
+    var m7 = new Mud(4600 , 450 , 100 , 50);
+    var m8 = new Mud(4900 , 450 , 100 , 50);
+    var m9 = new Mud(7000 , 450 , 200 , 50);
+    var m10 = new Mud(7200 , 450 , 200 , 50);
+    var m11 = new Mud(7400 , 450 , 200 , 50);
+    var m12 = new Mud(7600 , 450 , 200 , 50);
+    var m13 = new Mud(7800 , 450 , 200 , 50);
+    var m14 = new Mud(8000 , 450 , 200 , 50);
+    var m15 = new Mud(8200 , 450 , 200 , 50);
+    var muds = [m1 , m2 , m3 , m4 , m5 , m6 , m7 , m8 , m9 , m10 , m11 , m12 , m13 , m14 , m15];
+
+    var flag = new Image();
+    var numCorn = 0;
+
+    var intervalID = window.requestAnimationFrame(runGame);
+    function runGame() {
+      vo = 6;
+      var now = (new Date).getTime();
+      var mud = new Image();
+      var pig = new Image();
+      var bush = new Image();
+      var log = new Image();
+      var corn = new Image();
+      var isOnALog = false;
+      var logPigisOn = -1;
+      var time = Math.floor((now - start)/1000);
+
+      for(var i = 0; i < logs.length; i++){
+        if(logs[i].isPigStandingOn()){
+          isOnALog = true;
+          logPigisOn = i;
+        }
+      }
+
+      for(var i = 0 ; i < corns.length ; i++) {
+        if(corns[i].isTouchingPig()) {
+          timeLimit += 3;
+          if(infiniteMode){
+            numCorn++;
+          }
+          corns[i].display = false;
+        }
+      }
+
+      for(var i = 0 ; i < muds.length ; i++) {
+        if(muds[i].isTouchingPig()) {
+          vo = 1;
+          space = false;
+        }
+      }
+
+      if(right && pigX <= 350) {
+        pigX += vo;
+        isStanding = false;
+      }
+      else if(left && pigX > vo) {
+        pigX -= vo;
+        isStanding = false;
+      }
+
+      if(!left && !right && (pigY == 400 || isOnALog)) {
+        isStanding = true;
+      }else isStanding = false;
+
+      if(pigY < 400 && !isOnALog) {
+        //pigY -= 4;
+        space = false;
+        pigY -= g*(now - t)/1000 + vo;
+        isJumping = true;
+        isStanding = false;
+        if(pigY >= 400) {
+          pigY = 400;
+          canJump = true;
+        }
+      } else isJumping = false;
+      if(pigY == 400 && space && canJump) {
+        t = (new Date).getTime();
+        pigY -= vo;
+        space = false;
+        canJump = false;
+      }
+      if(isOnALog && space){
+        t = (new Date).getTime();
+        pigY -= vo;
+        space = false;
+        canJump = false;
+      }
+
+      if(pigX >= 350 && right) translation += vo;
+
+      if(pigX >= 9000-translation && pigX <= 9200-translation && pigY >= 100 && pigY <= 233) hasWon = true;
+      pig.addEventListener("load", function(){
+        drawBackground(context);
+        context.textAlign = 'left';
+        context.fillStyle = '#000000';
+        context.font = '20px OCR A Std';
+        var now = (new Date).getTime();
+        if(!infiniteMode){
+          context.fillText('Time Left: ' + Math.floor(timeLimit - (now - start)/1000) , 10 , 50);
+        }
+        else context.fillText('Time: ' + (time - numCorn*3), 10, 50);
+        for(var i = 0 ; i < bushes.length ; i++) context.drawImage(bush , bushes[i].x-translation , bushes[i].y , bushes[i].width , bushes[i].height);
+        for(var i = 0 ; i < logs.length ; i++) context.drawImage(log , logs[i].x-translation , logs[i].y , logs[i].width , logs[i].height);
+        for(var i = 0 ; i < corns.length ; i++) if(corns[i].display) context.drawImage(corn , corns[i].x - translation , corns[i].y , 50 , 50);
+        for(var i = 0 ; i < muds.length ; i++) context.drawImage(mud , muds[i].x-translation , muds[i].y , muds[i].width , muds[i].height);
+        context.drawImage(pig , pigX , pigY , 140 , 100);
+        context.drawImage(flag , 9050-translation , 100 , 100 , 133);
+
+        for(var i = 0; i < bushes.length; i++) if(bushes[i].isTouchingPig()) isTouchingBush = true;
+        if(Math.floor(timeLimit - (now - start)/1000) <= 0 && !infiniteMode) isTouchingBush = true;
+        if(isTouchingBush) {
+          fast.pause();
+          fast.currentTime = 0;
+          die.play();
+          context.fillStyle = '#000000';
+          context.font = '80px OCR A Std';
+          context.textAlign = 'center';
+          context.fillText('Game over!' , 300 , 300);
+          context.font = '20px OCR A Std';
+          context.fillText('Press space to try again' , 300 , 450);
+          addEventListener('keydown' , function(e1){
+
+            var key = e1.keyCode;
+            if(key == 32 && isTouchingBush){
+              isTouchingBush = false;
+              die.pause();
+              die.currentTime = 0;
+              fast.play();
+              loops++;
+              levelTwo();
+            }
+          } , false);
+        }
+        else if(hasWon) {
+          context.fillStyle = '#000000';
+          context.font = '40px OCR A Std';
+          context.textAlign = 'center';
+          localStorage.setItem('level2' , 'true');
+          if(!infiniteMode){
+            context.fillText('Level Complete!' , 300 , 300);
+            context.font = '20px OCR A Std';
+            context.fillText('Press space to continue' , 300 , 450);
+            addEventListener('keydown' , function(e1){
+
+              var key = e1.keyCode;
+              if(key == 32){
+                location.reload();
+              }
+            } , false);
+          }
+          else{
+            context.fillText('Time: ' + (time - numCorn*3) + ' seconds', 300, 300);
+            context.font = '20px OCR A Std';
+            context.fillText('Press space to try again' , 300 , 450);
+            addEventListener('keydown' , function(e1){
+
+              var key = e1.keyCode;
+              if(key == 32 && hasWon){
+                hasWon = false;
+                levelTwo();
+                removeEventListener('keydown' , e1);
+              }
+            } , false);
+
+          }
+        }
+        else if(!isTouchingBush && !hasWon) window.requestAnimationFrame(runGame);
+      }, false);
+      pig.src = 'pig.gif';
+      if(isStanding) pig.src = 'pig1.png';
+      if(isJumping) pig.src = 'pig2.png';
+
+      bush.src = 'bush.png';
+      log.src = 'log.png';
+      corn.src = 'corn.png';
+      mud.src = 'mud.png';
+      flag.src = 'flag.png';
+    }
+  }
+}
+
+function drawBackground(context) {
+  var lingrad = context.createLinearGradient(0,0,0,600);
+  lingrad.addColorStop(0, '#417AFC');
+  lingrad.addColorStop(1, '#CCF8FF');
+  context.fillStyle = lingrad;
+  context.fillRect(0 , 0 , 600 , 600);
+
+  lingrad.addColorStop(.66, '#009933');
+  lingrad.addColorStop(1, '#00e64d');
+  context.fillStyle = lingrad;
+  context.fillRect(0, 400, 600, 400);
+  //draw hills
+  /*context.beginPath();
+  context.moveTo(0, 400);
+  context.quadraticCurveTo(50, 350, 100, 400);
+  context.moveTo(100, 400);
+  context.quadraticCurveTo(200, 300, 300, 400);
+  context.moveTo(280, 400);
+  context.quadraticCurveTo(355, 325, 430, 400);
+  context.moveTo(430, 400);
+  context.quadraticCurveTo(480, 350, 530, 400);
+  context.moveTo(520, 400);
+  context.quadraticCurveTo(620, 300, 720, 400);
+  context.strokeStyle = '#00b33c';
+  context.stroke();
+  context.fillStyle = '#00b33c';
+  context.fill();*/
+  var hill1 = new Image();
+  var hill2 = new Image();
+  var hill3 = new Image();
+  var hill4 = new Image();
+  hill4.src = 'hill4.png';
+  hill3.src = 'hill3.png';
+  hill2.src = 'hill2.png';
+  hill1.src = 'hill1.png';
+  context.drawImage(hill1, 0, 310);
+  context.drawImage(hill2, 180, 342);
+  context.drawImage(hill3, 300, 342);
+  context.drawImage(hill4, 540, 330);
 }
 
 function doNothing(){}
