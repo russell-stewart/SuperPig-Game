@@ -583,6 +583,8 @@ var loops = 0;
 var isJumping = false;
 var isStanding = false;
 function levelTwo(){
+  var keyLog = "";
+  var georgeBush = false;
   var timeLimit = 50;
   var hasWon = false;
   var start = (new Date).getTime();
@@ -605,6 +607,8 @@ function levelTwo(){
     var left = false;
     addEventListener("keydown", function (e) {
       var x = e.keyCode;
+      keyLog += x;
+      if(keyLog.indexOf("38384040373937396665") >= 0) georgeBush = true;
       if(x == 32 || x == 38) space = true;
       if(x == 39) right = true;
       if(x == 37) left = true;
@@ -901,7 +905,8 @@ function levelTwo(){
       if(isStanding) pig.src = 'pig1.png';
       if(isJumping) pig.src = 'pig2.png';
 
-      bush.src = 'bush.png';
+      if(georgeBush) bush.src = 'gbush1.png';
+      else bush.src = 'bush.png';
       log.src = 'log.png';
       corn.src = 'corn.png';
       mud.src = 'mud.png';
