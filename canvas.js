@@ -517,10 +517,10 @@ function game() {
                 levelTwo();
               }
           } , false);
-          removeEventListener('keydown', function(e1){}, false);
+          removeEventListener('keydown', e1, false);
           }
         } , false);
-        removeEventListener('keydown', function(e){}, false);
+        removeEventListener('keydown', e, false);
       }
       else {
         instructionScreen = true;
@@ -866,7 +866,7 @@ function levelTwo(){
           context.fillStyle = '#000000';
           context.font = '40px OCR A Std';
           context.textAlign = 'center';
-          localStorage.setItem('levelTwo' , 'true');
+          localStorage.setItem('level2' , 'true');
           if(!infiniteMode){
             context.fillText('Level Complete!' , 300 , 300);
             context.font = '20px OCR A Std';
