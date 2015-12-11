@@ -488,13 +488,13 @@ function game() {
           else context.fillText('Lasers: all of them', 10, 70);
         }
 
-      if(stillPlaying && (score< 300 || infiniteMode)) window.requestAnimationFrame(movePig);
-      else if(stillPlaying && score >= 300 && !infiniteMode) {
+      if(stillPlaying && (score< 3 || infiniteMode)) window.requestAnimationFrame(movePig);
+      else if(stillPlaying && score >= 3 && !infiniteMode) {
         context.fillStyle = '#000000';
         context.font = '40px OCR A Std';
         context.textAlign = 'center';
         context.fillText('Level Complete!' , 300 , 300);
-        localStorage.setItem('level1' , 'true');
+        if(!localStorage.level1 == true) localStorage.setItem('level1' , 'true');
         context.font = '20px OCR A Std';
         context.fillText('Press space to continue' , 300 , 450);
 
@@ -517,10 +517,8 @@ function game() {
                 levelTwo();
               }
           } , false);
-          removeEventListener('keydown', e1, false);
           }
         } , false);
-        removeEventListener('keydown', e, false);
       }
       else {
         instructionScreen = true;
@@ -586,7 +584,7 @@ function levelTwo(){
   var keyLog = "";
   var georgeBush = false;
   var timeLimit = 50;
-  var hasWon = false;
+  var hasWon = true;
   var start = (new Date).getTime();
   var g = -9.8;
   vo = 6;
@@ -747,7 +745,7 @@ function levelTwo(){
     var flag = new Image();
     var numCorn = 0;
 
-    var intervalID = window.requestAnimationFrame(runGame);
+    var intervalID1 = window.requestAnimationFrame(runGame);
     function runGame() {
       vo = 6;
       var now = (new Date).getTime();
@@ -870,7 +868,7 @@ function levelTwo(){
           context.fillStyle = '#000000';
           context.font = '40px OCR A Std';
           context.textAlign = 'center';
-          localStorage.setItem('level2' , 'true');
+          if(!localStorage.level2 == true)localStorage.setItem('level2' , 'true');
           if(!infiniteMode){
             context.fillText('Level Complete!' , 300 , 300);
             context.font = '20px OCR A Std';
@@ -879,7 +877,7 @@ function levelTwo(){
 
               var key = e1.keyCode;
               if(key == 32){
-                location.reload();
+                levelThree();
               }
             } , false);
           }
@@ -926,22 +924,6 @@ function drawBackground(context) {
   lingrad.addColorStop(1, '#00e64d');
   context.fillStyle = lingrad;
   context.fillRect(0, 400, 600, 400);
-  //draw hills
-  /*context.beginPath();
-  context.moveTo(0, 400);
-  context.quadraticCurveTo(50, 350, 100, 400);
-  context.moveTo(100, 400);
-  context.quadraticCurveTo(200, 300, 300, 400);
-  context.moveTo(280, 400);
-  context.quadraticCurveTo(355, 325, 430, 400);
-  context.moveTo(430, 400);
-  context.quadraticCurveTo(480, 350, 530, 400);
-  context.moveTo(520, 400);
-  context.quadraticCurveTo(620, 300, 720, 400);
-  context.strokeStyle = '#00b33c';
-  context.stroke();
-  context.fillStyle = '#00b33c';
-  context.fill();*/
   var hill1 = new Image();
   var hill2 = new Image();
   var hill3 = new Image();
@@ -954,6 +936,116 @@ function drawBackground(context) {
   context.drawImage(hill2, 180, 342);
   context.drawImage(hill3, 300, 342);
   context.drawImage(hill4, 540, 330);
+}
+
+
+function levelThree() {
+  var numLasers = 3;
+  var numJumps = 3;
+  var numStomachs = 3;
+  var pigHP = 100;
+
+  var numLaserCannons = 3;
+  var numWarheads = 3;
+  var numChainsaws = 3;
+  var farmerHP = 100;
+
+  var pigPower = "";
+  var farmerPower = "";
+
+  var selection = -1;
+  var lineNumber = 0;
+  addEventListener('keydown' , function(e){
+    if(49 <= e <= 52) selection = e;
+    if(e == 32) advance = true;
+  } , false);
+
+  var lines = [
+    'Joe: Mwa ha haaaa!' ,
+    '(space to continue)' ,
+
+    "Joe: After defeating you with weapons" ,
+    "from my cousin's weapon emporium," ,
+
+    "Joe: I'll eat you to consume your powers!!!!" ,
+    "(Choose an action by pressing a number key!)"
+  ]
+
+  var game = document.getElementById('game');
+  if(game.getContext('2d')) {
+    var context = game.getContext('2d');
+    context.save();
+    var intervalID = window.requestAnimationFrame(bossFight);
+    var pig = new Image();
+    var farmerJoe = new Image();
+    function bossFight() {
+      farmerJoe.addEventListener('load' , function(){
+        background(context);
+        context.drawImage(farmerJoe , 450 , 305 , 75 , 195);
+        context.drawImage(pig , 50 , 400 , 140 , 100);
+        context.textAlign = 'center';
+        context.font = '10px OCR A Std';
+        context.fillStyle = '#FFFFFF';
+        context.fillText(('SuperPig: ' + pigHP + 'HP') , 125 , 65);
+        context.fillText(('Farmer Joe: ' + farmerHP + 'HP') , 475 , 65);
+        context.textAlign = 'left';
+        context.fillText(('1. Laser (-20HP)') , 60 , 85);
+        context.fillText(('    ' + numLasers + ' left') , 60 , 95);
+        context.fillText('2. Jump' , 60 , 110);
+        context.fillText(('     ' + numJumps) + ' left'  , 60 , 120);
+        context.fillText('3. Stomach of Steel' , 60 , 135);
+        context.fillText(('     ' + numStomachs + ' left') , 60 , 145);
+        context.fillText('4. ??????????' , 60 , 160);
+        context.fillText('     ??????' , 60 , 170);
+        context.fillText('Warhead (-30HP)' , 410 , 85);
+        context.fillText(('     ' + numWarheads + ' left') , 410 , 95)
+        context.fillText('Chainsaw (-10HP)' , 410 , 110);
+        context.fillText(('     ' + numChainsaws + ' left') , 410 , 120);
+        context.fillText('Laser (-20HP)' , 410 , 135);
+        context.fillText(('     ' + numLaserCannons + ' left') , 410 , 145);
+        context.font = '15px OCR A STD';
+        context.textAlign = 'center';
+        if(advance) lineNumber += 2;
+        context.fillText(lines[lineNumber] , 300 , 545);
+        context.fillText(lines[lineNumber + 1] , 300 , 565);
+        console.log(lineNumber);
+        window.requestAnimationFrame(bossFight);
+      } , false);
+      pig.src = 'pig1.png';
+      farmerJoe.src = 'farmerJoe.png';
+    }
+  }
+
+  function background(context) {
+    var lingrad = context.createLinearGradient(0,0,0,600);
+    lingrad.addColorStop(0, '#999999');
+    lingrad.addColorStop(1, '#333333');
+    context.fillStyle = lingrad;
+    context.fillRect(0 , 0 , 600 , 600);
+
+    lingrad.addColorStop(.66, '#000000');
+    lingrad.addColorStop(1, '#000000');
+    context.fillStyle = lingrad;
+    context.fillRect(0, 400, 600, 400);
+    var boxes = new Image();
+    var rocket = new Image();
+    rocket.addEventListener('load' , function(){
+      context.drawImage(rocket , 50 , 250);
+      context.drawImage(boxes , 200 , 200);
+    } , false);
+    rocket.src = 'menacingRocket.png';
+    boxes.src = 'boxes.png';
+
+    context.fillStyle = '#000000';
+    context.fillRect(50 , 50 , 150 , 130);
+    context.fillRect(400 , 50 , 150 , 130);
+    context.fillRect(100 , 525 , 400 , 50);
+    context.strokeStyle = '#FFFFFF';
+    context.lineWidth = 5;
+    context.strokeRect(50 , 50 , 150 , 130);
+    context.strokeRect(400 , 50 , 150 , 130);
+    context.strokeRect(100 , 525 , 400 , 50);
+  }
 }
 
 function doNothing(){}
