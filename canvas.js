@@ -46,6 +46,7 @@ var infiniteMode = false;
 var instructionScreen = true;
 var instructionScreen2 = false;
 var displayLevelScreen = false;
+var shouldAdvance3 = true;
 
 function loadCanvas() {
   var canvas = document.getElementById('canvas');
@@ -876,7 +877,8 @@ function levelTwo(){
             addEventListener('keydown' , function(e1){
 
               var key = e1.keyCode;
-              if(key == 32){
+              if(key == 32 && shouldAdvance3){
+                shouldAdvance3 = false;
                 levelThree();
               }
             } , false);
@@ -940,6 +942,7 @@ function drawBackground(context) {
 
 
 function levelThree() {
+  console.log('begin');
   var numLasers = 3;
   var numJumps = 3;
   var numStomachs = 3;
@@ -955,10 +958,16 @@ function levelThree() {
 
   var selection = -1;
   var lineNumber = 0;
+  var hasTakenTurn = true;
+  var keysDown = {};
   addEventListener('keydown' , function(e){
-    if(49 <= e <= 52) selection = e;
-    if(e == 32) advance = true;
+    keysDown[e.keyCode] = true;
+    console.log(keysDown);
+    if(keysDown[32]) lineNumber += 2;
   } , false);
+  addEventListener("keyup", function (e) {
+    delete keysDown[e.keyCode];
+   }, false);
 
   var lines = [
     'Joe: Mwa ha haaaa!' ,
@@ -975,12 +984,15 @@ function levelThree() {
   if(game.getContext('2d')) {
     var context = game.getContext('2d');
     context.save();
-    var intervalID = window.requestAnimationFrame(bossFight);
     var pig = new Image();
     var farmerJoe = new Image();
+    var bg = new Image();
+    farmerJoe.addEventListener('load' , function(){
+    var intervalID2 = window.requestAnimationFrame(bossFight , 50);
     function bossFight() {
-      farmerJoe.addEventListener('load' , function(){
-        background(context);
+      console.log('rrrreeeeee');
+
+        context.drawImage(bg , 0 , 0 , 600 , 600);
         context.drawImage(farmerJoe , 450 , 305 , 75 , 195);
         context.drawImage(pig , 50 , 400 , 140 , 100);
         context.textAlign = 'center';
@@ -1003,48 +1015,20 @@ function levelThree() {
         context.fillText(('     ' + numChainsaws + ' left') , 410 , 120);
         context.fillText('Laser (-20HP)' , 410 , 135);
         context.fillText(('     ' + numLaserCannons + ' left') , 410 , 145);
-        context.font = '15px OCR A STD';
+        context.font = '12px OCR A STD';
         context.textAlign = 'center';
-        if(advance) lineNumber += 2;
         context.fillText(lines[lineNumber] , 300 , 545);
         context.fillText(lines[lineNumber + 1] , 300 , 565);
-        console.log(lineNumber);
-        window.requestAnimationFrame(bossFight);
+        if(lineNumber == 4) hasTakenTurn = false;
+        
+        console.log('hi');
+        window.requestAnimationFrame(bossFight , 50);
+      }
       } , false);
+
       pig.src = 'pig1.png';
       farmerJoe.src = 'farmerJoe.png';
-    }
-  }
-
-  function background(context) {
-    var lingrad = context.createLinearGradient(0,0,0,600);
-    lingrad.addColorStop(0, '#999999');
-    lingrad.addColorStop(1, '#333333');
-    context.fillStyle = lingrad;
-    context.fillRect(0 , 0 , 600 , 600);
-
-    lingrad.addColorStop(.66, '#000000');
-    lingrad.addColorStop(1, '#000000');
-    context.fillStyle = lingrad;
-    context.fillRect(0, 400, 600, 400);
-    var boxes = new Image();
-    var rocket = new Image();
-    rocket.addEventListener('load' , function(){
-      context.drawImage(rocket , 50 , 250);
-      context.drawImage(boxes , 200 , 200);
-    } , false);
-    rocket.src = 'menacingRocket.png';
-    boxes.src = 'boxes.png';
-
-    context.fillStyle = '#000000';
-    context.fillRect(50 , 50 , 150 , 130);
-    context.fillRect(400 , 50 , 150 , 130);
-    context.fillRect(100 , 525 , 400 , 50);
-    context.strokeStyle = '#FFFFFF';
-    context.lineWidth = 5;
-    context.strokeRect(50 , 50 , 150 , 130);
-    context.strokeRect(400 , 50 , 150 , 130);
-    context.strokeRect(100 , 525 , 400 , 50);
+      bg.src = 'l3bg.png';
   }
 }
 
