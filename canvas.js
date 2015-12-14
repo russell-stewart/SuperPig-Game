@@ -946,6 +946,7 @@ function levelThree() {
   var numLasers = 3;
   var numJumps = 3;
   var numStomachs = 3;
+  var dance = false;
   var pigHP = 100;
 
   var numLaserCannons = 3;
@@ -956,13 +957,13 @@ function levelThree() {
   var pigPower = "";
   var farmerPower = "";
 
-  var selection = -1;
   var lineNumber = 0;
-  var hasTakenTurn = true;
+  var shouldTakeTurn = false;
+  var shouldAction = false;
   var keysDown = {};
   addEventListener('keydown' , function(e){
     keysDown[e.keyCode] = true;
-    console.log(keysDown);
+    //console.log(keysDown);
     if(keysDown[32]) lineNumber += 2;
   } , false);
   addEventListener("keyup", function (e) {
@@ -977,7 +978,10 @@ function levelThree() {
     "from my cousin's weapon emporium," ,
 
     "Joe: I'll eat you to consume your powers!!!!" ,
-    "(Choose an action by pressing a number key!)"
+    "(Choose an action by pressing a number key!)" ,
+
+    "SuperPig chose: " ,
+    "Farmer Joe chose: " ,
   ]
 
   var game = document.getElementById('game');
@@ -990,10 +994,9 @@ function levelThree() {
     farmerJoe.addEventListener('load' , function(){
     var intervalID2 = window.requestAnimationFrame(bossFight , 50);
     function bossFight() {
-      console.log('rrrreeeeee');
 
         context.drawImage(bg , 0 , 0 , 600 , 600);
-        context.drawImage(farmerJoe , 450 , 305 , 75 , 195);
+        context.drawImage(farmerJoe , 330 , 280 , 240 , 240);
         context.drawImage(pig , 50 , 400 , 140 , 100);
         context.textAlign = 'center';
         context.font = '10px OCR A Std';
@@ -1017,11 +1020,37 @@ function levelThree() {
         context.fillText(('     ' + numLaserCannons + ' left') , 410 , 145);
         context.font = '12px OCR A STD';
         context.textAlign = 'center';
-        context.fillText(lines[lineNumber] , 300 , 545);
-        context.fillText(lines[lineNumber + 1] , 300 , 565);
-        if(lineNumber == 4) hasTakenTurn = false;
-        
-        console.log('hi');
+        if(lineNumber == 6) context.fillText(lines[lineNumber] + pigPower , 300 , 545);
+        else context.fillText(lines[lineNumber] , 300 , 545);
+        if(lineNumber == 6) context.fillText(lines[lineNumber + 1] + farmerPower , 300 , 565);
+        else context.fillText(lines[lineNumber + 1] , 300 , 565);
+
+        if(shouldAction) {
+          if(farmerPower == 'WARHEAD' || farmerPower == 'LASER CANNON') farmerJoe.src = 'joeGun.gif';
+          if(farmerPower = 'CHAINSAW') farmerJoe.src = 'joeChainsaw.gif';
+          if(pigPower == 'JUMP') pig.src = 'pig2.png';
+        }
+
+        if(lineNumber == 4 && !shouldTakeTurn) shouldTakeTurn = true;
+        if(shouldTakeTurn && (keysDown[49] || keysDown[50] || keysDown[51] || keysDown[52])) {
+          if(keysDown[49] && numLasers > 0) pigPower = 'LASER';
+          if(keysDown[50] && numJumps > 0) pigPower = 'JUMP';
+          if(keysDown[51] && numStomachs > 0) pigPower = 'STOMACH OF STEEL';
+          if(keysDown[52] && dance) pigPower = 'DANCE!';
+
+          var hasChosen = false;
+          while(!hasChosen) {
+            hasChosen = true;
+            var x = Math.floor(Math.random() * 3);
+            if(x == 0 && numWarheads > 0) farmerPower = 'WARHEAD';
+            else if(x == 1 && numChainsaws > 0) farmerPower = 'CHAINSAW';
+            else if(x == 2 && numLaserCannons > 0) farmerPower = 'LASER CANNON';
+            else hasChosen = false;
+          }
+          shouldTakeTurn = false;
+          lineNumber = 6;
+          shouldAction = true;
+        }
         window.requestAnimationFrame(bossFight , 50);
       }
       } , false);
