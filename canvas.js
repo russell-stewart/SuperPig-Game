@@ -944,15 +944,28 @@ function drawBackground(context) {
 function levelThree() {
   console.log('begin');
   var numLasers = 3;
+  var shouldDisplayLaser = false;
+  var laserX = 140;
   var numJumps = 3;
+  var shouldJump = false;
   var numStomachs = 3;
+  var shouldStomach = false;
   var dance = false;
   var pigHP = 100;
+  var pigY = 400;
+  var pigJumpTimer;
+  var shouldMakeTimer = true;
 
   var numLaserCannons = 3;
+  var shouldDisplayLaserCannon = false;
   var numWarheads = 3;
+  var shouldDisplayWarhead = false;
   var numChainsaws = 3;
+  var shouldDisplayChainsaw = false;
   var farmerHP = 100;
+  var farmerWeaponX = 370;
+  var shouldDrawExplosion = false;
+  var explosionTimer;
 
   var pigPower = "";
   var farmerPower = "";
@@ -960,11 +973,13 @@ function levelThree() {
   var lineNumber = 0;
   var shouldTakeTurn = false;
   var shouldAction = false;
+  var timer;
   var keysDown = {};
   addEventListener('keydown' , function(e){
     keysDown[e.keyCode] = true;
     //console.log(keysDown);
-    if(keysDown[32]) lineNumber += 2;
+    if(keysDown[32] && lineNumber < 6) lineNumber += 2;
+    if(keysDown[32] && lineNumber == 8) lineNumber = 4;
   } , false);
   addEventListener("keyup", function (e) {
     delete keysDown[e.keyCode];
@@ -982,22 +997,30 @@ function levelThree() {
 
     "SuperPig chose: " ,
     "Farmer Joe chose: " ,
+
+    "SuperPig has " ,
+    "Farmer Joe has "
   ]
 
   var game = document.getElementById('game');
   if(game.getContext('2d')) {
     var context = game.getContext('2d');
     context.save();
+    var warhead = new Image();
+    var chainsaw = new Image();
+    var laserCannon = new Image();
+    var laser = new Image();
     var pig = new Image();
     var farmerJoe = new Image();
     var bg = new Image();
+    var explosion = new Image();
     farmerJoe.addEventListener('load' , function(){
     var intervalID2 = window.requestAnimationFrame(bossFight , 50);
     function bossFight() {
 
         context.drawImage(bg , 0 , 0 , 600 , 600);
         context.drawImage(farmerJoe , 330 , 280 , 240 , 240);
-        context.drawImage(pig , 50 , 400 , 140 , 100);
+        context.drawImage(pig , 50 , pigY , 140 , 100);
         context.textAlign = 'center';
         context.font = '10px OCR A Std';
         context.fillStyle = '#FFFFFF';
@@ -1021,20 +1044,115 @@ function levelThree() {
         context.font = '12px OCR A STD';
         context.textAlign = 'center';
         if(lineNumber == 6) context.fillText(lines[lineNumber] + pigPower , 300 , 545);
+        else if(lineNumber == 8) context.fillText(lines[lineNumber] + pigHP + 'HP left' , 300 , 545);
         else context.fillText(lines[lineNumber] , 300 , 545);
         if(lineNumber == 6) context.fillText(lines[lineNumber + 1] + farmerPower , 300 , 565);
+        else if(lineNumber == 8) context.fillText(lines[lineNumber + 1] + farmerHP + 'HP left' , 300 , 565);
         else context.fillText(lines[lineNumber + 1] , 300 , 565);
 
+        if(shouldAction && shouldDisplayChainsaw && (((new Date).getTime() - timer) / 1000) > 2) {
+          context.drawImage(chainsaw, farmerWeaponX , 390 , 68, 24);
+          farmerJoe.src = 'farmerJoe.png';
+        }
+        if(shouldAction && shouldDisplayWarhead && (((new Date).getTime() - timer) / 1000) > 2) {
+          context.drawImage(warhead, farmerWeaponX , 390 , 68, 48);
+          farmerJoe.src = 'farmerJoe.png';
+        }
+        if(shouldAction && shouldDisplayLaserCannon && (((new Date).getTime() - timer) / 1000) > 2) {
+          context.drawImage(laserCannon , farmerWeaponX , 390 , 68 , 48);
+          farmerJoe.src = 'farmerJoe.png';
+        }
+        if(shouldAction && shouldDisplayLaser && laserX < 350) {
+          context.drawImage(laser , laserX , 410 , 50 , 10);
+        } else if(shouldAction && shouldDisplayLaser) {
+          shouldDisplayLaser = false;
+          laserX = 140;
+        }
+        if(shouldDrawExplosion && ((new Date).getTime() - explosionTimer) < 1500) {
+          context.drawImage(explosion , 50 , 200 , 200 , 300);
+        }
+        else if(shouldDrawExplosion) shouldDrawExplosion = false;
+
         if(shouldAction) {
-          if(farmerPower == 'WARHEAD' || farmerPower == 'LASER CANNON') farmerJoe.src = 'joeGun.gif';
-          if(farmerPower = 'CHAINSAW') farmerJoe.src = 'joeChainsaw.gif';
-          if(pigPower == 'JUMP') pig.src = 'pig2.png';
+          if(shouldDisplayChainsaw || shouldDisplayWarhead || shouldDisplayLaserCannon) {
+            console.log(farmerWeaponX);
+            farmerWeaponX -= 0.3;
+            if(farmerWeaponX <= 130) {
+              if(shouldDisplayWarhead && pigPower != 'STOMACH OF STEEL') {
+                shouldDrawExplosion = true;
+                explosionTimer = (new Date).getTime();
+              }
+              farmerJoe.src = 'farmerJoe.png';
+              shouldDisplayChainsaw = false;
+              shouldDisplayWarhead = false;
+              shouldDisplayLaserCannon = false;
+              shouldAction = false;
+              farmerWeaponX = 370;
+              if(farmerPower == 'FUEL BOMB' && pigPower == 'JUMP') pigHP -= 30;
+              if(farmerPower == 'LASER CANNON' && pigPower != 'JUMP') pigHP -= 20;
+              if(farmerPower == 'CHAINSAW' && pigPower == 'STOMACH') pigHP -= 10;
+              lineNumber = 8;
+              shouldTakeTurn = true;
+              if(farmerPower == 'FUEL BOMB') numWarheads--;
+              else if(farmerPower == 'LASER CANNON') numLaserCannons--;
+              else if(farmerPower == 'CHAINSAW') numChainsaws--;
+              if(pigPower == 'JUMP') numJumps--;
+              if(pigPower == 'STOMACH OF STEEL') numStomachs--;
+              if(pigPower == 'LASER') numLasers--;
+              farmerPower = '';
+              pigPower = '';
+            }
+          }
+          if(shouldAction && farmerPower == 'FUEL BOMB') {
+            farmerJoe.src = 'joeGun.gif';
+            shouldDisplayWarhead = true;
+          }
+          else if(shouldAction && farmerPower == 'LASER CANNON') {
+            farmerJoe.src = 'joeGun.gif';
+            shouldDisplayLaserCannon = true;
+          }
+          else if(shouldAction && farmerPower == 'CHAINSAW') {
+            farmerJoe.src = 'joeChainsaw.gif';
+            shouldDisplayChainsaw = true;
+          }
+          if(shouldAction && pigPower == 'JUMP') {
+            pig.src = 'pig2.png';
+            if(shouldMakeTimer) {
+              pigJumpTimer = (new Date).getTime();
+              shouldMakeTimer = false;
+              shouldJump = true;
+            }
+            if(shouldJump) {
+              var t1 = (new Date).getTime();
+              pigY -= -4.5*(t1 - pigJumpTimer)/1000 + 4;
+              shouldJump = true;
+            }
+
+            if((t1 - pigJumpTimer)/ 1000 > 0.1 && pigY >= 370) {
+              pigY = 400;
+              shouldJump = false;
+              shouldMakeTimer = false;
+
+            }
+          }
+          else if(shouldAction && pigPower == 'STOMACH OF STEEL') {
+            shouldStomach = true;
+          }
+          else if(shouldAction && pigPower == 'LASER') {
+            laserX += 0.5;
+            if(laserX < 350) shouldDisplayLaser = true;
+            else shouldDisplayLaser = false;
+          }
         }
 
         if(lineNumber == 4 && !shouldTakeTurn) shouldTakeTurn = true;
         if(shouldTakeTurn && (keysDown[49] || keysDown[50] || keysDown[51] || keysDown[52])) {
+          //alert('hi');
           if(keysDown[49] && numLasers > 0) pigPower = 'LASER';
-          if(keysDown[50] && numJumps > 0) pigPower = 'JUMP';
+          if(keysDown[50] && numJumps > 0) {
+            pigPower = 'JUMP';
+            shouldMakeTimer = true;
+          }
           if(keysDown[51] && numStomachs > 0) pigPower = 'STOMACH OF STEEL';
           if(keysDown[52] && dance) pigPower = 'DANCE!';
 
@@ -1042,14 +1160,17 @@ function levelThree() {
           while(!hasChosen) {
             hasChosen = true;
             var x = Math.floor(Math.random() * 3);
-            if(x == 0 && numWarheads > 0) farmerPower = 'WARHEAD';
+            if(x == 0 && numWarheads > 0) farmerPower = 'FUEL BOMB';
             else if(x == 1 && numChainsaws > 0) farmerPower = 'CHAINSAW';
             else if(x == 2 && numLaserCannons > 0) farmerPower = 'LASER CANNON';
             else hasChosen = false;
           }
+          console.log(farmerPower);
           shouldTakeTurn = false;
           lineNumber = 6;
           shouldAction = true;
+          shouldTakeTurn = false;
+          timer = (new Date).getTime();
         }
         window.requestAnimationFrame(bossFight , 50);
       }
@@ -1058,6 +1179,11 @@ function levelThree() {
       pig.src = 'pig1.png';
       farmerJoe.src = 'farmerJoe.png';
       bg.src = 'l3bg.png';
+      laserCannon.src = 'laserbig.png';
+      warhead.src = 'warhead.png';
+      chainsaw.src = 'chainsaw.gif';
+      laser.src = 'laser.png';
+      explosion.src = 'explosion.gif';
   }
 }
 
